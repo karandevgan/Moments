@@ -1,0 +1,96 @@
+package com.moments.model;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "tblAlbum")
+public class Album {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int album_id;
+	
+	@Column(nullable=false)
+	private String album_name;
+	
+	@Column(nullable=true)
+	private String description;
+	
+	@Column(nullable=false)
+	private Date creation_date;
+	
+	@Column(nullable=false)
+	private Date last_modified;
+	
+//	@OneToMany(mappedBy="id", targetEntity=Photo.class)
+//	private List<Photo> photos;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="user_id")
+	private User user;
+	
+	public int getAlbum_id() {
+		return album_id;
+	}
+
+	public void setAlbum_id(int album_id) {
+		this.album_id = album_id;
+	}
+
+	public String getAlbum_name() {
+		return album_name;
+	}
+
+	public void setAlbum_name(String album_name) {
+		this.album_name = album_name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getCreation_date() {
+		return creation_date;
+	}
+
+	public void setCreation_date(Date creation_date) {
+		this.creation_date = creation_date;
+	}
+
+	public Date getLast_modified() {
+		return last_modified;
+	}
+
+	public void setLast_modified(Date last_modified) {
+		this.last_modified = last_modified;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+//	public List<Photo> getPhotos() {
+//		return photos;
+//	}
+//
+//	public void setPhotos(List<Photo> photos) {
+//		this.photos = photos;
+//	}
+}

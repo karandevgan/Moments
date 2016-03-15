@@ -1,0 +1,41 @@
+body {
+	padding-top: 40px;
+	padding-bottom: 40px;
+}
+
+.form-signin {
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+.form-signin .form-signin-heading, .form-signin .checkbox, .form-signin .radiobox
+	{
+	margin-bottom: 10px;
+}
+
+.form-signin .checkbox, .form-signin .radiobox {
+	margin-top: 10px;
+	font-weight: bolder;
+	font-size: medium;
+}
+
+.form-signin .form-control {
+	position: relative;
+	height: auto;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+
+.formerror {
+	color: red;
+	font-weight: bold;
+	text-shadow: 0px 0px 5px #87ceeb;
+}
