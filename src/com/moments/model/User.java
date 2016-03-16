@@ -45,6 +45,12 @@ public class User {
 	@Column(nullable=false)
 	private Date last_activity;
 
+	@Column(nullable=false)
+	private Integer number_of_albums;
+	
+	@Column(nullable=false)
+	private Integer number_of_photos;
+
 	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	private List<Album> albums;
 	
@@ -128,4 +134,19 @@ public class User {
 		this.albums = albums;
 	}
 
+	public Integer getNumber_of_albums() {
+		return number_of_albums;
+	}
+
+	public void setNumber_of_albums(Integer number_of_albums) {
+		this.number_of_albums = number_of_albums;
+	}
+	
+	public Integer getNumber_of_photos() {
+		return number_of_photos;
+	}
+
+	public void setNumber_of_photos(Integer number_of_photos) {
+		this.number_of_photos = number_of_photos;
+	}
 }

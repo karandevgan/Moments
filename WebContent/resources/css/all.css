@@ -1,1 +1,6 @@
 body {background-color: #eee;}
+
+.make-inline {
+	display: inline-block;
+	vertical-align: top;
+}

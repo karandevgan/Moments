@@ -26,6 +26,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+		registry.addResourceHandler("/pages/**").addResourceLocations("/pages/");
 	}
 	
 	@Bean
@@ -55,7 +56,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
-		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
 		sf.setHibernateProperties(hibernateProperties);
 		sf.setAnnotatedClasses(User.class, Album.class, Photo.class);
 		return sf;
