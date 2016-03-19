@@ -1,0 +1,14 @@
+<h1 class="page-header">{{ page_header_text }}</h1>
+<div class="col-xs-6 col-md-3" ng-repeat="album in albums">
+	<div class="thumbnail">
+		<a href="/moments/user/album/{{ album.album_id }}"> <img
+			src="{{ album.coverphoto }}" />
+		</a>
+		<div class="caption">
+			<h4>
+				<a href="/moments/user/album/{{ album.album_id }}">{{
+					album.album_name }}</a>
+			</h4>
+		</div>
+	</div>
+</div>

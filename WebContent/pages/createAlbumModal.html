@@ -1,0 +1,45 @@
+<div id="createAlbumModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+		<!--Login Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Enter album details</h4>
+			</div>
+			<form name="createAlbumForm" ng-controller="AlbumController as ctrl"
+				ng-submit="ctrl.submit()" novalidate="novalidate">
+
+				<div class="modal-body">
+					<div class="alert alert-warning" role="alert" ng-show="showDiv">
+						<ul>
+							<li ng-repeat="error in errorMsgs">{{ error }}</li>
+						</ul>
+					</div>
+					<div class="form-createalbum">
+						<label for="inputAlbumName" class="sr-only">Username</label> <input
+							type="text" id="inputAlbumName" class="form-control"
+							placeholder="Album Name" name="album_name"
+							ng-model="ctrl.album.album_name" required> <span
+							class="formerror" ng-show="createAlbumForm.album_name.$touched">
+							<span ng-show="createAlbumForm.album_name.$error.required">Album
+								Name is required.</span>
+						</span> <label for="inputAlbumDescription" class="sr-only">Album
+							Description</label>
+						<textarea id="inputDescription" class="form-control"
+							placeholder="Description of Album" name="description"
+							ng-model="ctrl.album.description" maxlength="40" rows="10"></textarea>
+						<span class="formerror"
+							ng-show="createAlbumForm.description.$error.maxlength">Maximum
+							40 characters</span>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<input class="btn btn-primary" type="submit" value="Create Album" />
+					<button type="button" class="btn btn-default" data-dismiss="modal"
+						ng-click="ctrl.reset()">Close</button>
+				</div>
+			</form>
+		</div>
+
+	</div>
+</div>

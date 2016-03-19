@@ -1,7 +1,9 @@
 package com.moments.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,13 +12,22 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 
 
 @Entity
 @Table(name = "tblUser")
-public class User {
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int user_id;
@@ -51,8 +62,21 @@ public class User {
 	@Column(nullable=false)
 	private Integer number_of_photos;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JsonManagedReference
+	private List<Photo> myPhotos;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JsonManagedReference
 	private List<Album> albums;
+	
+	@JsonIgnore
+	@JsonManagedReference
+	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="tblSharedImages", joinColumns = {@JoinColumn(name="user_id")}, inverseJoinColumns = {@JoinColumn(name="photo_id")})
+	private Set<Photo> shared_images;
 	
 	public int getUser_id() {
 		return user_id;
@@ -126,6 +150,14 @@ public class User {
 		this.last_activity = last_activity;
 	}
 
+	public List<Photo> getMyPhotos() {
+		return myPhotos;
+	}
+
+	public void setMyPhotos(List<Photo> myPhotos) {
+		this.myPhotos = myPhotos;
+	}
+
 	public List<Album> getAlbums() {
 		return albums;
 	}
@@ -148,5 +180,13 @@ public class User {
 
 	public void setNumber_of_photos(Integer number_of_photos) {
 		this.number_of_photos = number_of_photos;
+	}
+
+	public Set<Photo> getShared_images() {
+		return shared_images;
+	}
+
+	public void setShared_images(Set<Photo> shared_images) {
+		this.shared_images = shared_images;
 	}
 }

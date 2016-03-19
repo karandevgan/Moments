@@ -1,7 +1,10 @@
 package com.moments.model;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,11 +13,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.codehaus.jackson.annotate.JsonBackReference;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonManagedReference;
 
 @Entity
 @Table(name = "tblAlbum")
-public class Album {
+public class Album implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int album_id;
@@ -31,11 +44,18 @@ public class Album {
 	@Column(nullable=false)
 	private Date last_modified;
 	
-//	@OneToMany(mappedBy="id", targetEntity=Photo.class)
-//	private List<Photo> photos;
+	@JsonIgnore
+	@OneToMany(mappedBy = "album", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	@JsonManagedReference
+	private List<Photo> photos;
 
+	@Column(nullable=true)
+	private String coverphoto;
+	
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="user_id")
+	@JoinColumn(name="user_id", nullable=false)
+	@JsonBackReference
 	private User user;
 	
 	public int getAlbum_id() {
@@ -86,11 +106,19 @@ public class Album {
 		this.user = user;
 	}
 
-//	public List<Photo> getPhotos() {
-//		return photos;
-//	}
-//
-//	public void setPhotos(List<Photo> photos) {
-//		this.photos = photos;
-//	}
+	public String getCoverphoto() {
+		return coverphoto;
+	}
+
+	public void setCoverphoto(String coverphoto) {
+		this.coverphoto = coverphoto;
+	}
+
+	public List<Photo> getPhotos() {
+		return photos;
+	}
+
+	public void setPhotos(List<Photo> photos) {
+		this.photos = photos;
+	}
 }

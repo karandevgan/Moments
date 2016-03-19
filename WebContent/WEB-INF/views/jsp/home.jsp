@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>Moments | Home</title>
-
 <!-- Bootstrap -->
 <link href="/moments/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/moments/resources/css/corousel.css" rel="stylesheet">
@@ -17,9 +16,7 @@
 <script src="/moments/resources/angular/user_service.js"></script>
 <script src="/moments/resources/angular/user_controller.js"></script>
 </head>
-
 <body ng-app="myApp">
-
 	<div id="myCarousel" class="carousel slide" data-ride="carousel">
 		<!-- Indicators -->
 		<ol class="carousel-indicators">
@@ -96,7 +93,6 @@
 		</a>
 	</div>
 	<!-- /.carousel -->
-
 	<!-- START THE FEATURETTES -->
 	<div class="container">
 		<div class="row featurette" id="storageFeature">
@@ -109,9 +105,7 @@
 			</div>
 			<div class="col-md-5"></div>
 		</div>
-
 		<hr class="featurette-divider">
-
 		<div class="row featurette" id="mobileFeature">
 			<div class="col-md-7 col-md-push-5">
 				<h2 class="featurette-heading">
@@ -123,9 +117,7 @@
 			</div>
 			<div class="col-md-5 col-md-pull-7"></div>
 		</div>
-
 		<hr class="featurette-divider">
-
 		<div class="row featurette" id="appFeature">
 			<div class="col-md-7">
 				<h2 class="featurette-heading">
@@ -136,16 +128,12 @@
 			</div>
 			<div class="col-md-5"></div>
 		</div>
-
 		<hr class="featurette-divider">
-
 		<!-- /END THE FEATURETTES -->
 	</div>
-
 	<!--Login Modal -->
 	<div id="signInModal" class="modal fade" role="dialog">
 		<div class="modal-dialog">
-
 			<!--Login Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
@@ -153,9 +141,12 @@
 				</div>
 				<form name="loginForm" ng-controller="LoginUserController as ctrl"
 					ng-submit="loginForm.$valid && ctrl.submit()">
-
 					<div class="modal-body">
-						<div class="alert alert-warning" role="alert" ng-show="showDiv">{{errorMsg}}</div>
+						<div class="alert alert-warning" role="alert" ng-show="showDiv">
+							<ul>
+								<li>{{ errorMsg }}</li>
+							</ul>
+						</div>
 						<div class="form-signin">
 							<label for="inputusername" class="sr-only">Username</label> <input
 								type="text" id="inputusername" class="form-control"
@@ -185,14 +176,11 @@
 					</div>
 				</form>
 			</div>
-
 		</div>
 	</div>
-
 	<!--Signup Modal -->
 	<div id="signUpModal" class="modal fade" role="dialog">
 		<div class="modal-dialog">
-
 			<!--Signup Modal content-->
 			<div class="modal-content">
 				<div class="modal-header">
@@ -200,12 +188,14 @@
 				</div>
 				<form class="form-signin" ng-app="myApp" name="signupForm"
 					ng-controller="SignupUserController as ctrl"
-					ng-submit="signupForm.$valid && ctrl.submit()">
-
+					ng-submit="ctrl.submit() " novalidate>
 					<div class="modal-body">
-						<div class="alert alert-warning" role="alert" ng-show="showDiv">{{errorMsg}}</div>
+						<div class="alert alert-warning" role="alert" ng-show="showDiv">
+							<ul>
+								<li ng-repeat="error in errorMsgs">{{ error }}</li>
+							</ul>
+						</div>
 						<div class="form-signin">
-
 							<label for="inputUsername" class="sr-only">Username</label> <input
 								type="text" id="inputUsername" class="form-control"
 								placeholder="Username" name="username"
@@ -259,14 +249,15 @@
 							</span> <span class="formerror"
 								ng-show="ctrl.user.password!=confirm_password && !signupForm.confirm_password.$error.required">Passwords
 								do not match</span>
-
-
 							<div class="radiobox">
 								<input type="radio" ng-model="ctrl.user.gender" name="gender"
-									value="MALE" /> Male <input type="radio"
-									ng-model="ctrl.user.gender" name="gender" value="FEMALE" />
-								Female
+									ng-required="true" value="MALE" /> Male <input type="radio"
+									ng-model="ctrl.user.gender" name="gender" ng-required="true"
+									value="FEMALE" />Female
 							</div>
+							<span class="formerror"
+								ng-show="signupForm.gender.$error.required && ctrl.showGenderError">
+								Gender is required</span>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -278,7 +269,6 @@
 			</div>
 		</div>
 	</div>
-
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="/moments/resources/js/bootstrap.js"></script>

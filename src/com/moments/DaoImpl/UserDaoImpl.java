@@ -11,8 +11,8 @@ import com.moments.model.User;
 public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 
 	@Override
-	public void update() {
-
+	public void update(User user) {
+		getHibernateTemplate().update(user);
 	}
 
 	@Override
@@ -62,6 +62,18 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 			String hql = "from User where username=? and password=?";
 			String hashedPassword = ((Integer) user.getPassword().hashCode()).toString();
 			List users = getHibernateTemplate().find(hql, user.getUsername(), hashedPassword);
+			if (users.size() > 0)
+				return (User) users.get(0);
+		}
+		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public User getUser(String username) {
+		if (isRegistered(username)) {
+			String hql = "from User where username=?";
+			List users = getHibernateTemplate().find(hql, username);
 			if (users.size() > 0)
 				return (User) users.get(0);
 		}

@@ -9,17 +9,29 @@ App.controller('SignupUserController', [ '$scope', '$window', 'UserService',
 				gender : ''
 			};
 
+			this.showGenderError = false;
+
 			this.createUser = function(user) {
-				UserService.createUser(user).then(function() {
+				UserService.createUser(user).success(function() {
 					$window.location.href = '/moments/';
-				}, function(errResponse) {
+				}).error(function(errResponse) {
 					$scope.showDiv = true;
-					$scope.errorMsg = 'Error creating user';
+					$scope.errorMsgs = errResponse;
 				});
 			};
 
 			this.submit = function() {
-				this.createUser(this.user);
+				if (this.user.password != $scope.confirm_password) {
+					$scope.signupForm.$valid = false;
+				}
+
+				if (this.user.gender == '') {
+					this.showGenderError = true;
+				}
+
+				if ($scope.signupForm.$valid)
+					this.createUser(this.user);
+
 				console.log("Submit called");
 			};
 
@@ -37,9 +49,9 @@ App.controller('LoginUserController', [ '$scope', '$window', 'UserService',
 
 			this.getUser = function(user) {
 
-				UserService.getUser(user).then(function(response) {
-					$window.location.href = '/moments/home-login';
-				}, function(errResponse) {
+				UserService.getUser(user).success(function(response) {
+					$window.location.href = '/moments/';
+				}).error(function(data) {
 					$scope.showDiv = true;
 					$scope.errorMsg = 'Incorrect Username or Password';
 				});

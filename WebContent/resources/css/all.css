@@ -4,3 +4,15 @@ body {background-color: #eee;}
 	display: inline-block;
 	vertical-align: top;
 }
+
+.thumbnail .caption {
+	text-align: center;
+}
+
+.thumbnail :LINK {
+	text-decoration: none;
+}
+
+.thumbnail:HOVER {
+	box-shadow: 0px 0px 15px #888888;
+}

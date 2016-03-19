@@ -52,16 +52,3 @@
   margin-top: 0;
 }
 
-.placeholder {
-	display: inline-block;
-	margin-right: 10px;
-	margin-bottom: 40px;
-	text-align: center;
-}
-
-.placeholder img{
-	height:200px;
-	border: 1px;
-	width:200px;
-	margin: 5px;
-}

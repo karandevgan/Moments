@@ -5,7 +5,7 @@ import com.moments.model.User;
 public interface UserDao {
 	public void save(User user);
 	
-	public void update();
+	public void update(User user);
 
 	public void delete();
 	
@@ -14,7 +14,8 @@ public interface UserDao {
 	public boolean isEmailRegistered(String email);
 	
 	public User getUser(User user);
-	
+
+	public User getUser(String username);
 }
 
 

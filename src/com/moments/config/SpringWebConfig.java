@@ -13,6 +13,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import com.moments.DaoImpl.AlbumDaoImpl;
+import com.moments.DaoImpl.PhotoDaoImpl;
 import com.moments.DaoImpl.UserDaoImpl;
 import com.moments.model.Album;
 import com.moments.model.Photo;
@@ -56,11 +58,13 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
-		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 		sf.setHibernateProperties(hibernateProperties);
 		sf.setAnnotatedClasses(User.class, Album.class, Photo.class);
 		return sf;
 	}
+	
+
 	
 	@Bean
 	public UserDaoImpl userDao(){
@@ -69,4 +73,18 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		return user;
 	}
 	
+	@Bean
+	public AlbumDaoImpl albumDao(){
+		AlbumDaoImpl album= new AlbumDaoImpl();
+		album.setSessionFactory(sessionFactory().getObject());
+		return album;
+	}
+	
+	@Bean 
+	public PhotoDaoImpl photoDao()
+	{
+		PhotoDaoImpl photo= new PhotoDaoImpl();
+		photo.setSessionFactory(sessionFactory().getObject());
+		return photo;
+	}
 }

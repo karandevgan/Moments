@@ -7,17 +7,18 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>Moments | Home</title>
 
+<script
+	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<script src="/moments/resources/angular/album_service.js"></script>
+<script src="/moments/resources/angular/album_controller.js"></script>
+
 <!-- Bootstrap -->
 <link href="/moments/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/moments/resources/css/nav.css" rel="stylesheet">
 <link href="/moments/resources/css/sidebar.css" rel="stylesheet">
 <link href="/moments/resources/css/signin.css" rel="stylesheet">
 <link href="/moments/resources/css/all.css" rel="stylesheet">
-
-<script
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="/moments/resources/angular/album_service.js"></script>
-<script src="/moments/resources/angular/album_controller.js"></script>
 </head>
 
 <body ng-app="myApp">
@@ -40,7 +41,7 @@
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li class="active"><a href="/moments">Home <span class="sr-only">(current)</span></a></li>
+						<li><a href="/moments">Home </a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> Album <span class="caret"></span></a>
@@ -51,7 +52,10 @@
 									data-backdrop="static" data-keyboard="false"
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
-						<li><a href="/moments/user/allphotos">All Photos</a></li>
+						<li class="active"><a href="/moments/user/allphotos">All
+								Photos <span class="sr-only"></span>
+						</a></li>
+
 					</ul>
 
 					<ul class="nav navbar-nav navbar-right">
@@ -85,16 +89,17 @@
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</div>
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-				ng-controller="AlbumController as ctrl">
-				<ng-include src="albumData"><img src="/moments/resources/static/loader.gif" /></ng-include>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="col-xs-6 col-md-3">
+					<h1 class="page-header">All Images</h1>
+				</div>
 			</div>
 		</div>
 	</div>
-
+	
+	
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
 	
-
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="/moments/resources/js/bootstrap.js"></script>
