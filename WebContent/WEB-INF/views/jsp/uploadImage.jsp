@@ -53,7 +53,7 @@
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
 						<li><a href="/moments/user/allphotos">All Photos</a></li>
-						<li class="active"><a href="#">Upload Image<span
+						<li class="active"><a href="#">Upload Photos<span
 								class="sr-only">(current)</span></a>
 					</ul>
 
@@ -74,7 +74,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-sm-3 col-md-2 sidebar">
+			<nav class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
 					<li class="active"><a href="#">Overview <span
 							class="sr-only">(current)</span></a></li>
@@ -87,19 +87,46 @@
 					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
-			</div>
+			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-				<div class="col-xs-6 col-md-3" ng-controller="UploadController as ctrl">
+				<nav>
+					<ul class="breadcrumb">
+						<li><a href="/moments/">Home</a></li>
+						<li><a href="/moments/user/album/${album_id}">${album_name}</a></li>
+						<li class="active">Upload</li>
+					</ul>
+				</nav>
+				<div ng-controller="UploadController as ctrl"
+					ng-init="album_id = ${album_id}">
+					<form name="uploadPhotoForm" ng-submit="ctrl.uploadFile()"
+						novalidate="novalidate" ng-show="show_upload_form">
+
+						<div class="alert alert-warning" role="alert" ng-show="showDiv">
+							<ul>
+								<li ng-repeat="error in errorMsgs">{{ error }}</li>
+							</ul>
+						</div>
 						<div class="form-group">
-							<label for="img">Select Images</label><br>
-							<input type="file" id="file1" multiple ng-files="getTheFiles($files)" />
+							<label for="img">Select Images</label><br> <input
+								type="file" id="file1" multiple ng-files="getTheFiles($files)"
+								ng-required="true" />
 							<p class="help-block">Only jpg and png images are allowed.</p>
 						</div>
-						<input type="button" class="btn btn-default" ng-click="ctrl.uploadFile()" value="Upload">
+
+
+						<input type="submit" class="btn btn-danger" value="Upload">
+					</form>
+
+					<div ng-show="show_upload_count">
+						<h2>Uploading Images: {{ upload_count }} / {{ total_files }}</h2>
+						<progress value="{{ upload_count }}" max="{{ total_files }}"
+							style="width: 50%"></progress>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
 
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
 

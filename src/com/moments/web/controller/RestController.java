@@ -74,15 +74,4 @@ public class RestController {
 	public boolean isEmailRegistered(@RequestParam String email) {
 		return userDao.isEmailRegistered(email);
 	}
-
-@RequestMapping(value = "/imagetest")
-	public ResponseEntity<Void> setPhoto() {
-		Photo photo = new Photo();
-		photo.setPath("");
-		photo.setPhoto_name("Test Image2");
-		photo.setCreation_date(new Date());
-		photo.setAlbum(albumDao.getAlbum(1));
-		photoDao.save(photo);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
-	}
 }

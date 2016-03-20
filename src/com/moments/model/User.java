@@ -58,9 +58,6 @@ public class User implements Serializable {
 
 	@Column(nullable=false)
 	private Integer number_of_albums;
-	
-	@Column(nullable=false)
-	private Integer number_of_photos;
 
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
@@ -174,14 +171,6 @@ public class User implements Serializable {
 		this.number_of_albums = number_of_albums;
 	}
 	
-	public Integer getNumber_of_photos() {
-		return number_of_photos;
-	}
-
-	public void setNumber_of_photos(Integer number_of_photos) {
-		this.number_of_photos = number_of_photos;
-	}
-
 	public Set<Photo> getShared_images() {
 		return shared_images;
 	}

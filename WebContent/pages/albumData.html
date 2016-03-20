@@ -5,10 +5,22 @@
 			src="{{ album.coverphoto }}" />
 		</a>
 		<div class="caption">
-			<h4>
+			<h4 class="make-inline">
 				<a href="/moments/user/album/{{ album.album_id }}">{{
-					album.album_name }}</a>
+					album.album_name }}</a>&nbsp;&nbsp;
 			</h4>
+			<div class="btn-group make-inline">
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="#">Share</a></li>
+					<li><a href="#" ng-click="ctrl.deleteAlbum(album.album_id)">Delete</a></li>
+					<li><a href="#" ng-click="ctrl.downloadAlbum(album.album_name)">Download</a></li>
+				</ul>
+				<span role="button"
+					data-toggle="dropdown">
+					<span class="caret"></span>
+				</span>
+
+			</div>
 		</div>
 	</div>
 </div>

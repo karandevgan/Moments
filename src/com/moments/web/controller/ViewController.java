@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.moments.Dao.AlbumDao;
+import com.moments.Dao.PhotoDao;
 import com.moments.Dao.UserDao;
+import com.moments.model.Album;
+import com.moments.model.User;
 
 @Controller
 public class ViewController {
@@ -18,7 +22,21 @@ public class ViewController {
 	public UserDao userDao;
 
 	@Autowired
+	public AlbumDao albumDao;
+
+	@Autowired
+	public PhotoDao photoDao;
+
+	@Autowired
 	public HttpSession session;
+
+	@RequestMapping(value = { "/overview" }, method = RequestMethod.GET)
+	public ModelAndView getUserOverview() {
+		User user = userDao.getUser(session.getAttribute("username").toString());
+		int number_of_albums = user.getNumber_of_albums();
+		int number_of_photos = photoDao.getTotalPhotos(user);
+		return null;
+	}
 
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
 	public ModelAndView getHomepage(HttpServletRequest req) {
@@ -41,21 +59,37 @@ public class ViewController {
 		session.removeAttribute("username");
 		return new ModelAndView("redirect:home");
 	}
-	
+
 	@RequestMapping(value = "/user/album/{album_id}")
 	public ModelAndView showAlbum(@PathVariable int album_id) {
-		ModelAndView mv = new ModelAndView("showAlbum");
-		mv.addObject("album_id", album_id);
-		return new ModelAndView("showAlbum");
+		ModelAndView mv = new ModelAndView();
+		Album album = albumDao.getAlbum(album_id);
+		if (album != null) {
+			mv.addObject("album_id", album_id);
+			mv.addObject("album_name", album.getAlbum_name());
+			mv.setViewName("showAlbum");
+		} else {
+			mv.setViewName("404");
+		}
+		return mv;
 	}
-	
-	@RequestMapping(value = "/user/album/upload")
-	public ModelAndView uploadImage(){
-		return new ModelAndView("uploadImage");
+
+	@RequestMapping(value = "/user/upload/{album_id}")
+	public ModelAndView uploadImage(@PathVariable int album_id) {
+		ModelAndView mv = new ModelAndView();
+		Album album = albumDao.getAlbum(album_id);
+		if (album != null) {
+			mv.addObject("album_name", album.getAlbum_name());
+			mv.addObject("album_id", album_id);
+			mv.setViewName("uploadImage");
+		} else {
+			mv.setViewName("404");
+		}
+		return mv;
 	}
-	
+
 	@RequestMapping(value = "/user/allphotos")
-	public ModelAndView allPhotos(){
+	public ModelAndView allPhotos() {
 		return new ModelAndView("allimages");
 	}
 }

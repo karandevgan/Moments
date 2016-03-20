@@ -26,9 +26,6 @@ public class Photo implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	
-	@Column(nullable=false)
-	private String photo_name;
-	
 	@Column(nullable=true)
 	private String description;
 	
@@ -56,14 +53,6 @@ public class Photo implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getPhoto_name() {
-		return photo_name;
-	}
-
-	public void setPhoto_name(String photo_name) {
-		this.photo_name = photo_name;
 	}
 
 	public String getDescription() {

@@ -31,8 +31,25 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 					$scope.albumData = "/moments/pages/albumData.html";
 					console.log($scope.albumData);
 				});
-			}
-
+			};
+			
+			this.deleteAlbum = function(album_id) {
+				console.log(album_id);
+				AlbumService.deleteAlbum(album_id).success(function(response) {
+					$window.location.href='';
+				}).error(function(response){
+					console.error(response);
+				});
+			};
+			
+			this.downloadAlbum = function(album_name) {
+				AlbumService.downloadAlbum(album_name).success(function(response) {
+					$window.location.href=response;
+				}).error(function(response){
+					console.error(response);
+				});
+			};
+			
 			this.submit = function() {
 				if ($scope.createAlbumForm.$valid)
 					this.createAlbum(this.album);
@@ -50,53 +67,59 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 		function($scope, $window, AlbumService) {
 			$scope.photos = [];
-
 			this.getAlbum = function(album_id) {
 				AlbumService.getAlbum(album_id).success(function(response) {
 					console.log("Album called");
 					$scope.photos = response;
 					console.log($scope.photos.length);
 					if ($scope.photos.length > 0){
-						$scope.page_header_text = "";
+						$scope.page_header_text = "Photos in album";
+						$scope.albumPhotos = "/moments/pages/albumPhotos.html";
 					} else {
 						$scope.page_header_text = "No photos in this album";
 					}
 				}).error(function(data) {
 					console.error("Error");
 				}).finally(function() {
-					$scope.albumData = "/moments/pages/albumPhotos.html";
+					$scope.albumPhotos = "/moments/pages/albumPhotos.html";
 					console.log($scope.albumData);
 				});
 			};
 		} ]);
 
-App.controller('UploadController', [ '$scope', 'AlbumService',
+App.controller('UploadController', [ '$scope', '$window','AlbumService',
 
-function($scope, AlbumService) {
+function($scope, $window, AlbumService) {
+	$scope.show_upload_form = true;
+	var files;
+	$scope.upload_count = 0;
+	$scope.total_files = 0;
 
-	this.formdata = new FormData();
-    $scope.getTheFiles = function ($files) {
+	$scope.getTheFiles = function ($files) {
     	console.log("Inside Files");
-    	console.log($files);
-        angular.forEach($files, function (value, key) {
-            this.formdata.append(key, value);
-        });
-		console.log(this.formdata);
+    	files = $files;
+    	$scope.total_files = $files.length;
     };
 		
 	this.uploadFile = function() {
+		$scope.show_upload_count = true;
+		$scope.show_upload_form = false;
 
-		AlbumService.uploadFile(formdata).success(function(response) {
-			console.log("Success");
-		}).error(function(data) {
-			console.error("Error");
-		});
-// var file = this.img.value;
-// console.log(this.img);
-// var filename = file[0].replace(/^.*[\\\/]/, '');
-// console.log(filename);
+		angular.forEach(files, function (value, key) {
+			var formdata = new FormData();
+            formdata.append(key, value);
+            console.log(this.album_id);
+            AlbumService.uploadFile($scope.album_id, formdata).success(function(response) {
+    			console.log("Success");
+    			$scope.upload_count += 1;
+    			if ($scope.upload_count == $scope.total_files) {
+    				$window.location.href= "/moments/user/album/" + $scope.album_id;
+    			}
+    		}).error(function(data) {
+    			console.error("Error");
+    		});
+        });
 	};
-
 }
 
-])
+]);

@@ -1,5 +1,6 @@
 package com.moments.config;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.springframework.context.annotation.Bean;
@@ -7,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -19,18 +21,30 @@ import com.moments.DaoImpl.UserDaoImpl;
 import com.moments.model.Album;
 import com.moments.model.Photo;
 import com.moments.model.User;
- 
-@EnableWebMvc //mvc:annotation-driven
+
+@EnableWebMvc // mvc:annotation-driven
 @Configuration
 @ComponentScan(basePackages = { "com.moments.web.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
- 
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 		registry.addResourceHandler("/pages/**").addResourceLocations("/pages/");
 	}
-	
+
+	@Bean(name = "multipartResolver")
+	public CommonsMultipartResolver getResolver() throws IOException {
+		CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+
+		// Set the maximum allowed size (in bytes) for each individual file.
+		resolver.setMaxUploadSize(5242880);// 5MB
+
+		// You may also set other available properties.
+
+		return resolver;
+	}
+
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -39,8 +53,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		viewResolver.setSuffix(".jsp");
 		return viewResolver;
 	}
-	
-	
+
 	@Bean
 	public DriverManagerDataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
@@ -50,7 +63,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		ds.setPassword("root");
 		return ds;
 	}
-	
+
 	@Bean
 	public AnnotationSessionFactoryBean sessionFactory() {
 		AnnotationSessionFactoryBean sf = new AnnotationSessionFactoryBean();
@@ -63,27 +76,24 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		sf.setAnnotatedClasses(User.class, Album.class, Photo.class);
 		return sf;
 	}
-	
 
-	
 	@Bean
-	public UserDaoImpl userDao(){
-		UserDaoImpl user= new UserDaoImpl();
+	public UserDaoImpl userDao() {
+		UserDaoImpl user = new UserDaoImpl();
 		user.setSessionFactory(sessionFactory().getObject());
 		return user;
 	}
-	
+
 	@Bean
-	public AlbumDaoImpl albumDao(){
-		AlbumDaoImpl album= new AlbumDaoImpl();
+	public AlbumDaoImpl albumDao() {
+		AlbumDaoImpl album = new AlbumDaoImpl();
 		album.setSessionFactory(sessionFactory().getObject());
 		return album;
 	}
-	
-	@Bean 
-	public PhotoDaoImpl photoDao()
-	{
-		PhotoDaoImpl photo= new PhotoDaoImpl();
+
+	@Bean
+	public PhotoDaoImpl photoDao() {
+		PhotoDaoImpl photo = new PhotoDaoImpl();
 		photo.setSessionFactory(sessionFactory().getObject());
 		return photo;
 	}

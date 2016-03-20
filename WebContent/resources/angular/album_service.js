@@ -57,19 +57,40 @@ App.factory('AlbumService', [
 							});
 				},
 
-				uploadFile : function(formData) {
-					return $http.post('http://localhost:8080/moments/upload',
+				uploadFile : function(album_id, formData) {
+					var url = 'http://localhost:8080/moments/user/upload?album_id=' + album_id;
+					return $http.post(url,
 							formData, {
-								/*transformRequest : angular.identity,*/
+								transformRequest : angular.identity,
 								headers : {
-									'Content-Type' : 'undefined'
+									'Content-Type' : undefined
 								}
 							}).success(function(data, status) {
-						return data;
+						return status;
 					}).error(function(data, status) {
+						return status;
+					});
+				},
+				
+				deleteAlbum : function(album_id) {
+					var url = 'user/album/delete?album_id=' + album_id;
+					return $http.get(url).success(function(responseData, status) {
+						return responseData;
+					}).error(function(data,status) {
+						console.error("Error while deleting album");
 						return data;
 					});
-				}
-
+ 				},
+ 				
+ 				downloadAlbum : function(album_name) {
+					var url = 'user/album/download/' + album_name;
+					console.log(url);
+					return $http.get(url).success(function(responseData, status) {
+						return responseData;
+					}).error(function(data,status) {
+						console.error("Error while downloading album");
+						return data;
+					});
+ 				}
 			}
 		} ]);

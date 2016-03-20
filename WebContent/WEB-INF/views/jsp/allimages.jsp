@@ -75,7 +75,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-sm-3 col-md-2 sidebar">
+			<nav class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
 					<li class="active"><a href="#">Overview <span
 							class="sr-only">(current)</span></a></li>
@@ -88,7 +88,7 @@
 					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
-			</div>
+			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 				<div class="col-xs-6 col-md-3">
 					<h1 class="page-header">All Images</h1>

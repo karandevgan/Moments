@@ -27,7 +27,6 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 		user.setCreation_date(new Date());
 		user.setLast_activity(new Date());
 		user.setNumber_of_albums(0);
-		user.setNumber_of_photos(0);
 		getHibernateTemplate().save(user);
 	}
 

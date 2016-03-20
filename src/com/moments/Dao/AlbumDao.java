@@ -9,7 +9,7 @@ public interface AlbumDao {
 	public void save(Album album);
 	
 	public void update();
-	public void delete();
+	public void delete(int user_id);
 	
 	public void details();
 

@@ -1,8 +1,20 @@
-body {background-color: #eee;}
+body {
+	background-color: #eee;
+}
 
 .make-inline {
 	display: inline-block;
-	vertical-align: top;
+	vertical-align: middle;
+}
+
+.thumbnail img {
+	height: 100px;
+}
+
+@media ( min-width : 768px) {
+	.thumbnail > a > img {
+		height: 200px;
+	}
 }
 
 .thumbnail .caption {

@@ -1,3 +1,6 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +12,6 @@
 
 <script
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-
 <script src="/moments/resources/angular/album_service.js"></script>
 <script src="/moments/resources/angular/album_controller.js"></script>
 
@@ -42,9 +44,10 @@
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<li><a href="/moments">Home </a></li>
-						<li class="dropdown active"><a href="#" class="dropdown-toggle"
-							data-toggle="dropdown" role="button" aria-haspopup="true"
-							aria-expanded="false"> Album <span class="caret"></span> <span class="sr-only">(current)</span></a>
+						<li class="dropdown active"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown" role="button"
+							aria-haspopup="true" aria-expanded="false"> Album <span
+								class="caret"></span> <span class="sr-only">(current)</span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/moments">All Albums</a></li>
 								<li role="separator" class="divider"></li>
@@ -53,7 +56,8 @@
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
 						<li><a href="/moments/user/allphotos">All Photos</a></li>
-						<li><a href="/moments/user/album/upload">Upload Image</a>
+						<li><a href="/moments/user/upload/${album_id}">Upload
+								Photos</a></li>
 					</ul>
 
 					<ul class="nav navbar-nav navbar-right">
@@ -73,7 +77,7 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<div class="col-sm-3 col-md-2 sidebar">
+			<nav class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
 					<li class="active"><a href="#">Overview <span
 							class="sr-only">(current)</span></a></li>
@@ -86,18 +90,25 @@
 					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
-			</div>
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-				ng-controller="GetAlbumController as ctrl"
-				ng-init="ctrl.getAlbum(${album_id})">
-				<ng-include src="albumData"><img src="/moments/resources/static/loader.gif" /></ng-include>
-				
+			</nav>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<nav>
+					<ul class="breadcrumb">
+						<li><a href="/moments/">Home</a></li>
+						<li class="active">${album_name}</li>
+					</ul>
+				</nav>
+				<div ng-controller="GetAlbumController as ctrl"
+					ng-init="ctrl.getAlbum(${album_id})">
+					<ng-include src="albumPhotos"> <img
+						src="/moments/resources/static/loader.gif" /></ng-include>
+
+				</div>
+
 			</div>
 		</div>
 	</div>
 
-	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
-	
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="/moments/resources/js/bootstrap.js"></script>
