@@ -114,6 +114,9 @@ public class UserController {
 
 	@RequestMapping(value = "/upload", params = { "album_id" }, method = RequestMethod.POST)
 	public ResponseEntity<Void> uploadFile(MultipartHttpServletRequest request, HttpSession session) {
+		
+		System.setProperty("proxyHost", "hysbc1.persistent.co.in");
+		System.setProperty("proxyPort", "8080");
 		int album_id = Integer.parseInt(request.getParameter("album_id"));
 		String username = session.getAttribute("username").toString();
 		Iterator<String> itr = request.getFileNames();
@@ -125,7 +128,7 @@ public class UserController {
 
 			// Temporary path..This will be updated to server's filesystem when
 			// deployed
-			File temp = new File("D:/Project/" + file.getOriginalFilename());
+			File temp = new File("C:/Project/" + file.getOriginalFilename());
 
 			try {
 				file.transferTo(temp);
@@ -145,7 +148,7 @@ public class UserController {
 				temp.delete();
 			} catch (Exception e) {
 				e.printStackTrace();
-				new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+				return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
 		return new ResponseEntity<Void>(HttpStatus.CREATED);
@@ -163,7 +166,7 @@ public class UserController {
 			return new ResponseEntity<String>(url, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
 		}
-		return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
 	}
 }

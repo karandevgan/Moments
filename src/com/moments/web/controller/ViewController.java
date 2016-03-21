@@ -18,6 +18,9 @@ import com.moments.model.User;
 
 @Controller
 public class ViewController {
+	
+	private String redirectHome = "http://localhost:8080/moments";
+	
 	@Autowired
 	public UserDao userDao;
 
@@ -56,12 +59,18 @@ public class ViewController {
 
 	@RequestMapping(value = "/logout")
 	public ModelAndView logoutUser() {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
 		session.removeAttribute("username");
 		return new ModelAndView("redirect:home");
 	}
 
 	@RequestMapping(value = "/user/album/{album_id}")
 	public ModelAndView showAlbum(@PathVariable int album_id) {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
 		ModelAndView mv = new ModelAndView();
 		Album album = albumDao.getAlbum(album_id);
 		if (album != null) {
@@ -76,6 +85,9 @@ public class ViewController {
 
 	@RequestMapping(value = "/user/upload/{album_id}")
 	public ModelAndView uploadImage(@PathVariable int album_id) {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
 		ModelAndView mv = new ModelAndView();
 		Album album = albumDao.getAlbum(album_id);
 		if (album != null) {
@@ -90,6 +102,17 @@ public class ViewController {
 
 	@RequestMapping(value = "/user/allphotos")
 	public ModelAndView allPhotos() {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
 		return new ModelAndView("allimages");
+	}
+	
+	@RequestMapping(value = "/user/profile")
+	public ModelAndView profile() {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
+		return new ModelAndView("profile");
 	}
 }
