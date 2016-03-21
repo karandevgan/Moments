@@ -5,7 +5,7 @@ App.factory('UserService', [
 		function($http, $q) {
 			return {
 				createUser : function(user) {
-					return $http.post("http://localhost:8080/moments/register",
+					return $http.post("/moments/register",
 							user).success(function(data) {
 						return data;
 					}).error(function(data, status) {
@@ -14,7 +14,7 @@ App.factory('UserService', [
 					});
 				},
 				getUser : function(user) {
-					return $http.post("http://localhost:8080/moments/login",
+					return $http.post("/moments/login",
 							user).success(function(response) {
 						return response;
 					}).error(function(data, status) {

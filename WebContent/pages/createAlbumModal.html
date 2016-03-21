@@ -19,10 +19,11 @@
 						<label for="inputAlbumName" class="sr-only">Username</label> <input
 							type="text" id="inputAlbumName" class="form-control"
 							placeholder="Album Name" name="album_name"
-							ng-model="ctrl.album.album_name" required> <span
+							ng-model="ctrl.album.album_name" pattern="^[A-Z0-9].{2,19}$" required> <span
 							class="formerror" ng-show="createAlbumForm.album_name.$touched">
 							<span ng-show="createAlbumForm.album_name.$error.required">Album
 								Name is required.</span>
+							<span ng-show="createAlbumForm.album_name.$error.pattern">Must start with uppercase letter or digit and should be between 3 digits to 20</span>
 						</span> <label for="inputAlbumDescription" class="sr-only">Album
 							Description</label>
 						<textarea id="inputDescription" class="form-control"

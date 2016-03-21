@@ -35,10 +35,12 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 			
 			this.deleteAlbum = function(album_id) {
 				console.log(album_id);
+				$scope.showUpdateDiv = true;
+				$scope.update = "Album will be deleted shortly";
 				AlbumService.deleteAlbum(album_id).success(function(response) {
 					$window.location.href='';
 				}).error(function(response){
-					console.error(response);
+					$scope.update = "There was some error deleting the album";
 				});
 			};
 			
@@ -94,31 +96,48 @@ function($scope, $window, AlbumService) {
 	var files;
 	$scope.upload_count = 0;
 	$scope.total_files = 0;
-
+	var valid_types = ["image/jpeg", "image/png", "image/jpg"];
 	$scope.getTheFiles = function ($files) {
     	console.log("Inside Files");
     	files = $files;
     	$scope.total_files = $files.length;
+    	for (var i=0; i < $scope.total_files; i++) {
+    		var type = files[i].type;
+    		if (valid_types.indexOf(type) == -1){
+    			$scope.error = "Only jpeg and png files are allowed.";
+    			$scope.showErrorDiv = true;
+    			$scope.uploadPhotoForm.$valid = false;
+    			console.log("Invalid file types");
+    			break;
+    		}
+    	}
     };
 		
 	this.uploadFile = function() {
-		$scope.show_upload_count = true;
-		$scope.show_upload_form = false;
+		if ($scope.uploadPhotoForm.$valid) {
+			$scope.show_upload_count = true;
+			$scope.show_upload_form = false;
 
-		angular.forEach(files, function (value, key) {
-			var formdata = new FormData();
-            formdata.append(key, value);
-            console.log(this.album_id);
-            AlbumService.uploadFile($scope.album_id, formdata).success(function(response) {
-    			console.log("Success");
-    			$scope.upload_count += 1;
-    			if ($scope.upload_count == $scope.total_files) {
-    				$window.location.href= "/moments/user/album/" + $scope.album_id;
-    			}
-    		}).error(function(data) {
-    			console.error("Error");
-    		});
-        });
+			angular.forEach(files, function (value, key) {
+				var formdata = new FormData();
+	            formdata.append(key, value);
+	            console.log(this.album_id);
+	            AlbumService.uploadFile($scope.album_id, formdata).success(function(response) {
+	    			console.log("Success");
+	    			$scope.upload_count += 1;
+	    			if ($scope.upload_count == $scope.total_files) {
+	    				$window.location.href= "/moments/user/album/" + $scope.album_id;
+	    			}
+	    		}).error(function(data) {
+	    			console.error("Error");
+	    			$scope.showErrorDiv = true;
+	    			$scope.error = "There was some problem in uploading files. Please try again";
+	    			$scope.show_upload_count = false;
+	    			$scope.show_upload_form = true;
+
+	    		});
+			});
+		}
 	};
 }
 

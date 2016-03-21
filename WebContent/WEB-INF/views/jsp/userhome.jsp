@@ -60,7 +60,7 @@
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> ${ username } <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">Profile</a></li>
+								<li><a href="/moments/user/profile">Profile</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="/moments/logout">Log Out</a></li>
 							</ul></li>
@@ -95,6 +95,11 @@
 						<li class="active">Home</li>
 					</ul>
 				</nav>
+				<div class="alert alert-warning" role="alert" ng-show="showUpdateDiv">
+					<ul>
+						<li>{{ update }}</li>
+					</ul>
+				</div>
 				<ng-include src="albumData"> <img
 					src="/moments/resources/static/loader.gif" /></ng-include>
 			</div>

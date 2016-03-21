@@ -62,7 +62,7 @@
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> ${ username } <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="#">Profile</a></li>
+								<li><a href="/moments/user/profile">Profile</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a href="/moments/logout">Log Out</a></li>
 							</ul></li>
@@ -98,14 +98,14 @@
 				</nav>
 				<div ng-controller="UploadController as ctrl"
 					ng-init="album_id = ${album_id}">
+					<div class="alert alert-warning" role="alert"
+						ng-show="showErrorDiv">
+						<ul>
+							<li>{{ error }}</li>
+						</ul>
+					</div>
 					<form name="uploadPhotoForm" ng-submit="ctrl.uploadFile()"
 						novalidate="novalidate" ng-show="show_upload_form">
-
-						<div class="alert alert-warning" role="alert" ng-show="showDiv">
-							<ul>
-								<li ng-repeat="error in errorMsgs">{{ error }}</li>
-							</ul>
-						</div>
 						<div class="form-group">
 							<label for="img">Select Images</label><br> <input
 								type="file" id="file1" multiple ng-files="getTheFiles($files)"

@@ -14,6 +14,7 @@ App.controller('SignupUserController', [ '$scope', '$window', 'UserService',
 			this.createUser = function(user) {
 				UserService.createUser(user).success(function() {
 					$window.location.href = '/moments/';
+					$window.alert("Registration Successful. Kindly login using Sign In button.")
 				}).error(function(errResponse) {
 					$scope.showDiv = true;
 					$scope.errorMsgs = errResponse;
@@ -23,10 +24,6 @@ App.controller('SignupUserController', [ '$scope', '$window', 'UserService',
 			this.submit = function() {
 				if (this.user.password != $scope.confirm_password) {
 					$scope.signupForm.$valid = false;
-				}
-
-				if (this.user.gender == '') {
-					this.showGenderError = true;
 				}
 
 				if ($scope.signupForm.$valid)

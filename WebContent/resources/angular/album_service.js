@@ -25,7 +25,7 @@ App.factory('AlbumService', [
 			return {
 				createAlbum : function(album) {
 					return $http.post(
-							"http://localhost:8080/moments/user/album/create",
+							"/moments/user/album/create",
 							album).success(function(data) {
 						return data;
 					}).error(function(data, status) {
@@ -35,7 +35,7 @@ App.factory('AlbumService', [
 				},
 				getAlbum : function(id) {
 					return $http.get(
-							"http://localhost:8080/moments/user/album", {
+							"/moments/user/album", {
 								params : {
 									album_id : id
 								}
@@ -48,7 +48,7 @@ App.factory('AlbumService', [
 				},
 				getAlbums : function() {
 					return $http.get(
-							"http://localhost:8080/moments/user/albums")
+							"/moments/user/albums")
 							.success(function(responseData, status) {
 								return responseData;
 							}).error(function(data, status) {
@@ -58,7 +58,7 @@ App.factory('AlbumService', [
 				},
 
 				uploadFile : function(album_id, formData) {
-					var url = 'http://localhost:8080/moments/user/upload?album_id=' + album_id;
+					var url = '/moments/user/upload?album_id=' + album_id;
 					return $http.post(url,
 							formData, {
 								transformRequest : angular.identity,
@@ -66,8 +66,10 @@ App.factory('AlbumService', [
 									'Content-Type' : undefined
 								}
 							}).success(function(data, status) {
+								console.log(status);
 						return status;
 					}).error(function(data, status) {
+						console.log(status);
 						return status;
 					});
 				},

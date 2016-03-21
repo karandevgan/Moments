@@ -199,24 +199,28 @@
 							<label for="inputUsername" class="sr-only">Username</label> <input
 								type="text" id="inputUsername" class="form-control"
 								placeholder="Username" name="username"
-								ng-model="ctrl.user.username" required="required" /> <span
+								ng-model="ctrl.user.username" required="required" pattern="^[a-z][a-z0-9]{5,15}$" /> <span
 								class="formerror" ng-show="signupForm.username.$touched">
 								<span ng-show="signupForm.username.$error.required">Username
 									is required.</span>
+								<span ng-show="signupForm.username.$error.pattern && !signupForm.username.$error.required" class="formerror">
+								Username must start with lowercase letter, can contain only lowercase characters and digits and should be between 6 to 15 characters.</span>
 							</span> <label for="inputfirstname" class="sr-only">First Name</label> <input
 								type="text" id="inputfirstname" class="form-control"
 								placeholder="First Name" name="first_name"
-								ng-model="ctrl.user.first_name" required="required" /> <span
+								ng-model="ctrl.user.first_name" pattern="^[A-Z][a-zA-Z]+$" required="required" /> <span
 								class="formerror"
-								ng-show="signupForm.first_name.$touched && signupForm.first_name.$invalid">
+								ng-show="signupForm.first_name.$touched">
 								<span ng-show="signupForm.first_name.$error.required">Firstname
 									is required.</span>
+								<span ng-show="signupForm.first_name.$error.pattern">Must start with uppercase letter. Should contain only letters.</span>
 							</span> <label for="inputLastname" class="sr-only">Last Name</label> <input
 								type="text" id="inputLastname" class="form-control"
 								placeholder="Last Name" name="last_name"
-								ng-model="ctrl.user.last_name" required="required" /> <span
+								ng-model="ctrl.user.last_name" required="required" pattern="^[A-Z][a-zA-Z]+$" /> <span
 								class="formerror"
-								ng-show="signupForm.last_name.$touched && signupForm.last_name.$invalid">
+								ng-show="signupForm.last_name.$touched">
+								<span ng-show="signupForm.last_name.$error.pattern">Must start with uppercase letter. Should contain only letters.</span>
 								<span ng-show="signupForm.last_name.$error.required">Lastname
 									is required.</span>
 							</span> <label for="inputEmail" class="sr-only">Email address</label> <input
@@ -230,10 +234,10 @@
 							</span> <label for="inputPassword" class="sr-only">Password</label> <input
 								type="password" id="inputPassword" class="form-control"
 								placeholder="Password" name="password"
-								ng-model="ctrl.user.password" ng-minlength="3" ng-maxlength="10"
+								ng-model="ctrl.user.password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}"
 								required="required" /> <span class="formerror"
-								ng-show="signupForm.password.$error.minlength||signupForm.password.$error.maxlength">Password
-								must in between 3 and 10</span> <span class="formerror"
+								ng-show="signupForm.password.$error.pattern">Password
+								must contain at least one number and one uppercase and lowercase letter, and at least 6 or more characters.</span> <span class="formerror"
 								ng-show="signupForm.password.$touched "> <span
 								ng-show="signupForm.password.$error.required">Password is
 									required</span>
@@ -241,7 +245,7 @@
 								Password</label> <input type="password" id="inputConfirmPassword"
 								class="form-control" placeholder="Confirm Password"
 								name="confirm_password" ng-model="confirm_password"
-								valid-password-c="password" required="required" /> <span
+								required="required" /> <span
 								class="formerror"
 								ng-show="signupForm.confirm_password.$touched "> <span
 								ng-show="signupForm.confirm_password.$error.required&&signupForm.confirm_password.$touched">Please
@@ -256,7 +260,7 @@
 									value="FEMALE" />Female
 							</div>
 							<span class="formerror"
-								ng-show="signupForm.gender.$error.required && ctrl.showGenderError">
+								ng-show="signupForm.gender.$error.required && signupForm.$submitted">
 								Gender is required</span>
 						</div>
 					</div>
