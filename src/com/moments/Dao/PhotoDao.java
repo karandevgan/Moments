@@ -2,6 +2,7 @@ package com.moments.Dao;
 
 import java.util.List;
 
+import com.moments.model.Album;
 import com.moments.model.Photo;
 import com.moments.model.User;
 
@@ -19,5 +20,5 @@ public interface PhotoDao {
 	
 	public boolean isRegistered(int album_id);
 	
-	List<Photo> getPhotos(int album_id, int user_id);
+	List<Photo> getPhotos(Album album, User user, int call);
 }

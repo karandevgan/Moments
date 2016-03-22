@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>Moments | Home</title>
-
 <!-- Bootstrap -->
 <link href="/moments/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/moments/resources/css/nav.css" rel="stylesheet">

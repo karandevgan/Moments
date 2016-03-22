@@ -37,10 +37,11 @@ App.factory('AlbumService',
 								return data;
 							});
 						},
-						getAlbum : function(id) {
+						getAlbum : function(id, call) {
 							return $http.get("/moments/user/album", {
 								params : {
-									album_id : id
+									album_id : id,
+									call : call
 								}
 							}).success(function(response) {
 								return response;

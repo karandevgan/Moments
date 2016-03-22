@@ -7,7 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.orm.hibernate3.HibernateTransactionManager;
 import org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -26,6 +28,7 @@ import com.moments.service.Service;
 @EnableWebMvc
 // mvc:annotation-driven
 @Configuration
+@EnableTransactionManagement
 @ComponentScan(basePackages = { "com.moments.web.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
@@ -67,7 +70,8 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		ds.setPassword("root");
 		return ds;
 	}
-
+	
+	
 	@Bean
 	public AnnotationSessionFactoryBean sessionFactory() {
 		AnnotationSessionFactoryBean sf = new AnnotationSessionFactoryBean();
@@ -82,6 +86,12 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		return sf;
 	}
 
+	@Bean
+	public HibernateTransactionManager transactionManager() {
+		HibernateTransactionManager tx = new HibernateTransactionManager(sessionFactory().getObject());
+		return tx;
+	}
+	
 	@Bean
 	public UserDaoImpl userDao() {
 		UserDaoImpl user = new UserDaoImpl();

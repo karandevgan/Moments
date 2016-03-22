@@ -68,6 +68,7 @@ public class UserController {
 				session.getAttribute("username").toString()).getUser_id();
 		List<Album> albums = service.getAlbums(user_id);
 		HttpStatus returnStatus = null;
+		System.out.println(albums);
 		if (albums != null)
 			returnStatus = HttpStatus.OK;
 		else
@@ -76,15 +77,16 @@ public class UserController {
 		return new ResponseEntity<List<Album>>(albums, returnStatus);
 	}
 
-	@RequestMapping(value = "/album", params = { "album_id" }, method = RequestMethod.GET)
+	@RequestMapping(value = "/album", params = { "album_id", "call" }, method = RequestMethod.GET)
 	public ResponseEntity<List<Photo>> getPhotos(HttpServletRequest req,
 			HttpSession session) {
 		try {
-			int user_id = service.getUser(
-					session.getAttribute("username").toString()).getUser_id();
+			User user = service.getUser(
+					session.getAttribute("username").toString());
 			int album_id = Integer.parseInt(req.getParameter("album_id"));
+			int call = Integer.parseInt(req.getParameter("call"));
 			ResponseEntity<List<Photo>> returnEntity = new ResponseEntity<List<Photo>>(
-					service.getPhotos(album_id, user_id), HttpStatus.OK);
+					service.getPhotos(album_id, user, call), HttpStatus.OK);
 			return returnEntity;
 		} catch (NumberFormatException e) {
 			return new ResponseEntity<List<Photo>>(HttpStatus.BAD_REQUEST);

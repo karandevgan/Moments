@@ -1,4 +1,4 @@
-var App = angular.module('myApp', []);
+var App = angular.module('myApp', ['infinite-scroll']);
 App.factory('UserService', [
 		'$http',
 		'$q',

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.ArchiveParams;
@@ -31,41 +32,50 @@ public class Service {
 	private Map config = ObjectUtils.asMap("cloud_name", "kaydewgun", "api_key", "757818147311579", "api_secret",
 			"Jo1xhkKMAiHSMa1ySvSc48r6qlQ");
 
+	@Transactional
 	public boolean save(User user) {
 		return userDao.save(user);
 
 	}
 
+	@Transactional
 	public boolean isRegistered(String username) {
 		return userDao.isRegistered(username);
 
 	}
 
+	@Transactional
 	public boolean isEmailRegistered(String email) {
 		return userDao.isEmailRegistered(email);
 	}
 
+	@Transactional
 	public User getUser(User user) {
 		return userDao.getUser(user);
 	}
 
+	@Transactional
 	public User getUser(String username) {
 		return userDao.getUser(username);
 	}
 
+	@Transactional
 	public int getTotalPhotos(User user) {
 		return photoDao.getTotalPhotos(user);
 	}
 
+	@Transactional
 	public Album getAlbum(int album_id) {
 		return albumDao.getAlbum(album_id);
 	}
 
+	@Transactional
 	public boolean update(User user) {
 		return userDao.update(user);
 
 	}
 
+	@Transactional
 	public boolean createAlbum(User user, Album album) {
 		album.setUser(user);
 		album.setCreation_date(new Date());
@@ -79,6 +89,7 @@ public class Service {
 		return isAlbumSaved && isUserUpdated;
 	}
 
+	@Transactional
 	public boolean deleteAlbum(String album_to_delete, int album_id, User user) {
 		// Cloudinary cloudinary = new Cloudinary(config);
 		// Api api = cloudinary.api();
@@ -94,6 +105,7 @@ public class Service {
 		}
 	}
 
+	@Transactional
 	public boolean uploadImage(Album album, User user, MultipartFile file) {
 		File temp = null;
 		try {
@@ -113,7 +125,7 @@ public class Service {
 			photo.setAlbum(album);
 			photo.setCreation_date(new Date());
 			photo.setPath(uploadResult.get("url").toString());
-			//photo.setPath(temp_path);
+			// photo.setPath(temp_path);
 			photo.setUser(user);
 			photoDao.save(photo);
 			return true;
@@ -137,11 +149,13 @@ public class Service {
 		}
 	}
 
+	@Transactional
 	public List<Album> getAlbums(int user_id) {
 		return albumDao.getAlbums(user_id);
 	}
 
-	public List<Photo> getPhotos(int album_id, int user_id) {
-		return photoDao.getPhotos(album_id, user_id);
+	@Transactional
+	public List<Photo> getPhotos(int album_id, User user, int call) {
+		return photoDao.getPhotos(albumDao.getAlbum(album_id), user, call);
 	}
 }

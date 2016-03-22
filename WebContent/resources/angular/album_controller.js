@@ -9,6 +9,15 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				last_modified : '',
 			};
 
+			$scope.images = [1, 2, 3, 4, 5, 6, 7, 8];
+
+			  $scope.loadMore = function() {
+			    var last = $scope.images[$scope.images.length - 1];
+			    for(var i = 1; i <= 8; i++) {
+			      $scope.images.push(last + i);
+			    }
+			  };
+			
 			$scope.albums = [];
 
 			this.createAlbum = function(album) {
@@ -24,9 +33,14 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 			this.getAlbums = function() {
 				AlbumService.getAlbums().success(function(response) {
 					$scope.albums = response;
-					$scope.page_header_text = "Your albums";
+					if($scope.albums.length > 0) {
+						$scope.page_header_text = "Your albums";
+					}
+					else {
+						$scope.page_header_text = "You have no albums.";
+					}
 				}).error(function(data) {
-					$scope.page_header_text = "You have no albums.";
+					$scope.page_header_text = "Error while retrieving albums.";
 				}).finally(function() {
 					$scope.albumData = "/moments/pages/albumData.html";
 					console.log($scope.albumData);
@@ -68,14 +82,16 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 
 App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 		function($scope, $window, AlbumService) {
+			this.call = 0;
 			$scope.photos = [];
 			this.getAlbum = function(album_id) {
-				AlbumService.getAlbum(album_id).success(function(response) {
+				AlbumService.getAlbum(album_id, this.call).success(function(response) {
 					console.log("Album called");
 					$scope.photos = response;
 					console.log($scope.photos.length);
 					if ($scope.photos.length > 0){
 						$scope.page_header_text = "Photos in album";
+						this.call += $scope.photos.length + 1;
 						$scope.albumPhotos = "/moments/pages/albumPhotos.html";
 					} else {
 						$scope.page_header_text = "No photos in this album";
@@ -109,7 +125,7 @@ function($scope, $window, AlbumService) {
     			$scope.error = "Only jpeg and png files are allowed.";
     			$scope.showErrorDiv = true;
     			this.isInvalidFiles = true;
-    			/*$scope.uploadPhotoForm.$valid = false;*/
+    			/* $scope.uploadPhotoForm.$valid = false; */
     			console.log("Invalid file types");
     			break;
     		}
