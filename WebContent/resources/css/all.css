@@ -7,15 +7,17 @@ body {
 	vertical-align: middle;
 }
 
-.thumbnail img {
+/* .thumbnail > a > img {
 	height: 100px;
+	width:auto;
 }
 
 @media ( min-width : 768px) {
 	.thumbnail > a > img {
 		height: 200px;
+		width: 100%;
 	}
-}
+} */
 
 .thumbnail .caption {
 	text-align: center;

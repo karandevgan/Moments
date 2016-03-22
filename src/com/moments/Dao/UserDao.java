@@ -3,9 +3,9 @@ package com.moments.Dao;
 import com.moments.model.User;
 
 public interface UserDao {
-	public void save(User user);
+	public boolean save(User user);
 	
-	public void update(User user);
+	public boolean update(User user);
 
 	public void delete();
 	

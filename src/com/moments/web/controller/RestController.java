@@ -25,20 +25,17 @@ import com.moments.Dao.UserDao;
 import com.moments.model.Album;
 import com.moments.model.Photo;
 import com.moments.model.User;
+import com.moments.service.Service;
 
 @Controller
 public class RestController {
 	@Autowired
-	public UserDao userDao;
-	@Autowired
-	public AlbumDao albumDao;
-	@Autowired
-	public PhotoDao photoDao;
-
+	private Service service;
+	
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<List<String>> saveUser(@RequestBody User user) {
-		boolean usernameExists = userDao.isRegistered(user.getUsername());
-		boolean emailExists = userDao.isEmailRegistered(user.getEmail());
+		boolean usernameExists = service.isRegistered(user.getUsername());
+		boolean emailExists = service.isEmailRegistered(user.getEmail());
 		HttpStatus status = null;
 		List<String> responseBuilder = new ArrayList<String>();
 		if (usernameExists || emailExists) {
@@ -48,7 +45,7 @@ public class RestController {
 				responseBuilder.add("Email already registered");
 			status = HttpStatus.CONFLICT;
 		} else {
-			userDao.save(user);
+			service.save(user);
 			responseBuilder.add("User Created");
 			status = HttpStatus.CREATED;
 		}
@@ -57,7 +54,7 @@ public class RestController {
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<Void> loginUser(@RequestBody User user, HttpSession session) {
-		if (userDao.getUser(user) != null) {
+		if (service.getUser(user) != null) {
 			session.setAttribute("username", user.getUsername());
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		} else {
@@ -67,11 +64,11 @@ public class RestController {
 
 	@RequestMapping(value = "/validateUser", method = RequestMethod.GET)
 	public boolean isUserRegistered(@RequestParam String username) {
-		return userDao.isRegistered(username);
+		return service.isRegistered(username);
 	}
 
 	@RequestMapping(value = "/userEmailValidation", method = RequestMethod.GET)
 	public boolean isEmailRegistered(@RequestParam String email) {
-		return userDao.isEmailRegistered(email);
+		return service.isEmailRegistered(email);
 	}
 }

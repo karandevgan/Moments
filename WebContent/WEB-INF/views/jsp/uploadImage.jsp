@@ -97,7 +97,7 @@
 					</ul>
 				</nav>
 				<div ng-controller="UploadController as ctrl"
-					ng-init="album_id = ${album_id}">
+					ng-init="album_id = ${album_id}" ng-cloak>
 					<div class="alert alert-warning" role="alert"
 						ng-show="showErrorDiv">
 						<ul>

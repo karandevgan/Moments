@@ -13,7 +13,7 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 
 			this.createAlbum = function(album) {
 				console.log(album);
-				AlbumService.createAlbum(album).success(function() {
+				AlbumService.createAlbum(album).success(function(data) {
 					$window.location.href = '/moments/';
 				}).error(function(errResponse) {
 					$scope.showDiv = true;
@@ -96,24 +96,34 @@ function($scope, $window, AlbumService) {
 	var files;
 	$scope.upload_count = 0;
 	$scope.total_files = 0;
-	var valid_types = ["image/jpeg", "image/png", "image/jpg"];
+	var valid_types = ["image/jpeg", "image/png", "image/jpg", "image/gif"];
 	$scope.getTheFiles = function ($files) {
+		this.isInvalidFiles = false;
     	console.log("Inside Files");
     	files = $files;
     	$scope.total_files = $files.length;
     	for (var i=0; i < $scope.total_files; i++) {
     		var type = files[i].type;
+    		console.log(type);
     		if (valid_types.indexOf(type) == -1){
     			$scope.error = "Only jpeg and png files are allowed.";
     			$scope.showErrorDiv = true;
-    			$scope.uploadPhotoForm.$valid = false;
+    			this.isInvalidFiles = true;
+    			/*$scope.uploadPhotoForm.$valid = false;*/
     			console.log("Invalid file types");
     			break;
     		}
     	}
+    	if (this.isInvalidFiles) {
+    		$scope.uploadPhotoForm.$valid = false;
+    	}
+    	else {
+    		$scope.uploadPhotoForm.$valid = true;
+    	}
     };
 		
 	this.uploadFile = function() {
+		console.log($scope.uploadPhotoForm.$valid);
 		if ($scope.uploadPhotoForm.$valid) {
 			$scope.show_upload_count = true;
 			$scope.show_upload_form = false;

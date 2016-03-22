@@ -6,7 +6,7 @@ import com.moments.model.Album;
 
 public interface AlbumDao {
 
-	public void save(Album album);
+	public boolean save(Album album);
 	
 	public void update();
 	public void delete(int user_id);

@@ -15,29 +15,24 @@ import com.moments.Dao.PhotoDao;
 import com.moments.Dao.UserDao;
 import com.moments.model.Album;
 import com.moments.model.User;
+import com.moments.service.Service;
 
 @Controller
 public class ViewController {
-	
+
 	private String redirectHome = "http://localhost:8080/moments";
 	
 	@Autowired
-	public UserDao userDao;
+	private Service service;
 
 	@Autowired
-	public AlbumDao albumDao;
-
-	@Autowired
-	public PhotoDao photoDao;
-
-	@Autowired
-	public HttpSession session;
+	private HttpSession session;
 
 	@RequestMapping(value = { "/overview" }, method = RequestMethod.GET)
 	public ModelAndView getUserOverview() {
-		User user = userDao.getUser(session.getAttribute("username").toString());
+		User user = service.getUser(session.getAttribute("username").toString());
 		int number_of_albums = user.getNumber_of_albums();
-		int number_of_photos = photoDao.getTotalPhotos(user);
+		int number_of_photos = service.getTotalPhotos(user);
 		return null;
 	}
 
@@ -72,7 +67,7 @@ public class ViewController {
 			return new ModelAndView("redirect:" + redirectHome);
 		}
 		ModelAndView mv = new ModelAndView();
-		Album album = albumDao.getAlbum(album_id);
+		Album album = service.getAlbum(album_id);
 		if (album != null) {
 			mv.addObject("album_id", album_id);
 			mv.addObject("album_name", album.getAlbum_name());
@@ -89,7 +84,7 @@ public class ViewController {
 			return new ModelAndView("redirect:" + redirectHome);
 		}
 		ModelAndView mv = new ModelAndView();
-		Album album = albumDao.getAlbum(album_id);
+		Album album = service.getAlbum(album_id);
 		if (album != null) {
 			mv.addObject("album_name", album.getAlbum_name());
 			mv.addObject("album_id", album_id);
@@ -107,7 +102,7 @@ public class ViewController {
 		}
 		return new ModelAndView("allimages");
 	}
-	
+
 	@RequestMapping(value = "/user/profile")
 	public ModelAndView profile() {
 		if (session.getAttribute("username") == null) {

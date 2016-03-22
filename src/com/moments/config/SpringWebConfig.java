@@ -21,16 +21,20 @@ import com.moments.DaoImpl.UserDaoImpl;
 import com.moments.model.Album;
 import com.moments.model.Photo;
 import com.moments.model.User;
+import com.moments.service.Service;
 
-@EnableWebMvc // mvc:annotation-driven
+@EnableWebMvc
+// mvc:annotation-driven
 @Configuration
 @ComponentScan(basePackages = { "com.moments.web.controller" })
 public class SpringWebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-		registry.addResourceHandler("/pages/**").addResourceLocations("/pages/");
+		registry.addResourceHandler("/resources/**").addResourceLocations(
+				"/resources/");
+		registry.addResourceHandler("/pages/**")
+				.addResourceLocations("/pages/");
 	}
 
 	@Bean(name = "multipartResolver")
@@ -69,7 +73,8 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		AnnotationSessionFactoryBean sf = new AnnotationSessionFactoryBean();
 		sf.setDataSource(dataSource());
 		Properties hibernateProperties = new Properties();
-		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+		hibernateProperties.setProperty("hibernate.dialect",
+				"org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 		sf.setHibernateProperties(hibernateProperties);
@@ -96,5 +101,10 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		PhotoDaoImpl photo = new PhotoDaoImpl();
 		photo.setSessionFactory(sessionFactory().getObject());
 		return photo;
+	}
+
+	@Bean
+	public Service service() {
+		return new Service();
 	}
 }

@@ -11,8 +11,13 @@ import com.moments.model.User;
 public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 
 	@Override
-	public void update(User user) {
-		getHibernateTemplate().update(user);
+	public boolean update(User user) {
+		try {
+			getHibernateTemplate().update(user);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	@Override
@@ -21,13 +26,19 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 	}
 
 	@Override
-	public void save(User user) {
-		String hashedPassword = ((Integer) user.getPassword().hashCode()).toString();
-		user.setPassword(hashedPassword);
-		user.setCreation_date(new Date());
-		user.setLast_activity(new Date());
-		user.setNumber_of_albums(0);
-		getHibernateTemplate().save(user);
+	public boolean save(User user) {
+		try {
+			String hashedPassword = ((Integer) user.getPassword().hashCode())
+					.toString();
+			user.setPassword(hashedPassword);
+			user.setCreation_date(new Date());
+			user.setLast_activity(new Date());
+			user.setNumber_of_albums(0);
+			getHibernateTemplate().save(user);
+			return true;
+		} catch (Exception ex) {
+			return false;
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -59,8 +70,10 @@ public class UserDaoImpl extends HibernateDaoSupport implements UserDao {
 	public User getUser(User user) {
 		if (isRegistered(user.getUsername())) {
 			String hql = "from User where username=? and password=?";
-			String hashedPassword = ((Integer) user.getPassword().hashCode()).toString();
-			List users = getHibernateTemplate().find(hql, user.getUsername(), hashedPassword);
+			String hashedPassword = ((Integer) user.getPassword().hashCode())
+					.toString();
+			List users = getHibernateTemplate().find(hql, user.getUsername(),
+					hashedPassword);
 			if (users.size() > 0)
 				return (User) users.get(0);
 		}
