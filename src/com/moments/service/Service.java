@@ -2,6 +2,7 @@ package com.moments.service;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,7 @@ public class Service {
 	@Autowired
 	private AlbumDao albumDao;
 
-	private Map config = ObjectUtils.asMap("cloud_name", "kaydewgun",
-			"api_key", "757818147311579", "api_secret",
+	private Map config = ObjectUtils.asMap("cloud_name", "kaydewgun", "api_key", "757818147311579", "api_secret",
 			"Jo1xhkKMAiHSMa1ySvSc48r6qlQ");
 
 	public boolean save(User user) {
@@ -97,25 +97,23 @@ public class Service {
 	public boolean uploadImage(Album album, User user, MultipartFile file) {
 		File temp = null;
 		try {
-			String temp_path = "" + file.getOriginalFilename();
+			String temp_path = "C:/Project/" + file.getOriginalFilename();
 			temp = new File(temp_path);
 			file.transferTo(temp);
 			// Will be set as environment variables when deployed
 
-			String uploadFolder = user.getUsername() + "/"
-					+ album.getAlbum_name();
+			String uploadFolder = user.getUsername() + "/" + album.getAlbum_name();
 			Map upload_params = ObjectUtils.asMap("folder", uploadFolder);
-			// Cloudinary cloudinary = new Cloudinary(config);
-			// Map uploadResult = cloudinary.uploader().upload(temp,
-			// upload_params);
+			Cloudinary cloudinary = new Cloudinary(config);
+			Map uploadResult = cloudinary.uploader().upload(temp, upload_params);
 
 			// System.out.println((String) uploadResult.get("public_id"));
 
 			Photo photo = new Photo();
 			photo.setAlbum(album);
 			photo.setCreation_date(new Date());
-			// photo.setPath(uploadResult.get("url").toString());
-			photo.setPath(temp_path);
+			photo.setPath(uploadResult.get("url").toString());
+			//photo.setPath(temp_path);
 			photo.setUser(user);
 			photoDao.save(photo);
 			return true;
@@ -131,12 +129,19 @@ public class Service {
 		Cloudinary cloudinary = new Cloudinary(config);
 		try {
 			String[] prefixes = { download_folder };
-			String url = cloudinary.downloadArchive(new ArchiveParams()
-					.prefixes(prefixes).flattenFolders(true));
+			String url = cloudinary.downloadArchive(new ArchiveParams().prefixes(prefixes).flattenFolders(true));
 			System.out.println(url);
 			return url;
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<Album> getAlbums(int user_id) {
+		return albumDao.getAlbums(user_id);
+	}
+
+	public List<Photo> getPhotos(int album_id, int user_id) {
+		return photoDao.getPhotos(album_id, user_id);
 	}
 }

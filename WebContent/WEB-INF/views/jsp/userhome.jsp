@@ -100,7 +100,7 @@
 						<li>{{ update }}</li>
 					</ul>
 				</div>
-				<ng-include src="albumData"> <img
+				<ng-include src="albumData"><img
 					src="/moments/resources/static/loader.gif" /></ng-include>
 			</div>
 		</div>
