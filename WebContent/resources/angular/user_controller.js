@@ -1,41 +1,96 @@
-App.controller('SignupUserController', [ '$scope', '$window', 'UserService',
-		function($scope, $window, UserService) {
-			this.user = {
-				username : '',
-				first_name : '',
-				last_name : '',
-				password : '',
-				email : '',
-				gender : ''
-			};
+App
+		.controller(
+				'SignupUserController',
+				[
+						'$scope',
+						'$window',
+						'UserService',
+						function($scope, $window, UserService) {
+							this.user = {
+								username : '',
+								first_name : '',
+								last_name : '',
+								password : '',
+								email : '',
+								gender : ''
+							};
 
-			this.showGenderError = false;
+							$scope.isUserNameValid = false;
+							$scope.isPasswordMatching = false;
+							$scope.isEmailValid=false;
+							this.showGenderError = false;
 
-			this.createUser = function(user) {
-				UserService.createUser(user).success(function() {
-					$window.location.href = '/moments/';
-					$window.alert("Registration Successful. Kindly login using Sign In button.")
-				}).error(function(errResponse) {
-					$scope.showDiv = true;
-					$scope.errorMsgs = errResponse;
-				});
-			};
+							this.createUser = function(user) {
+								UserService
+										.createUser(user)
+										.success(
+												function() {
+													$window.location.href = '/moments/';
+													$window
+															.alert("Registration Successful. Kindly login using Sign In button.")
+												}).error(function(errResponse) {
+											$scope.showDiv = true;
+											$scope.errorMsgs = errResponse;
+										});
+							};
 
-			this.submit = function() {
-				if (this.user.password != $scope.confirm_password) {
-					$scope.signupForm.$valid = false;
-				}
+							this.checkUsername = function() {
+								if (!$scope.signupForm.username.$error.required
+										&& !$scope.signupForm.username.$error.pattern) {
+									$scope.showUsernameStatus = true;
+									UserService
+											.checkUsername(this.user.username)
+											.success(
+													function(response) {
+														$scope.usernameStatus = response[0];
+														$scope.isUserNameValid = true;
+													})
+											.error(
+													function(error) {
+														$scope.usernameStatus = error[0];
+														$scope.isUserNameValid = false;
+													});
+								} else {
+									$scope.showUsernameStatus = false;
+								}
+							};
+							
+							this.checkEmail = function(){
+								if (!$scope.signupForm.email.$error.required
+										&& $scope.signupForm.email.$valid) {
+									$scope.showEmailStatus = true;
+									UserService
+											.checkEmail(this.user.email)
+											.success(
+													function(response) {
+														$scope.emailStatus = response[0];
+														$scope.isEmailValid = true;
+													})
+											.error(
+													function(error) {
+														$scope.emailStatus = error[0];
+														$scope.isemailValid = false;
+													});
+								} else {
+									$scope.showEmailStatus = false;
+								}
+							};
 
-				if ($scope.signupForm.$valid)
-					this.createUser(this.user);
+							this.submit = function() {
+								if (this.user.password == $scope.confirm_password) {
+									$scope.isPasswordMatching = true;
+								}
 
-				console.log("Submit called");
-			};
+								if ($scope.signupForm.$valid && $scope.isPasswordMatching && $scope.isUserNameValid && $scope.isEmailValid)
+									this.createUser(this.user);
 
-			this.reset = function() {
-				$window.location.href = '/moments/'
-			};
-		} ]);
+								console.log("Submit called");
+							};
+
+							this.reset = function() {
+								$window.location.href = '/moments/'
+							};
+						} ]);
 
 App.controller('LoginUserController', [ '$scope', '$window', 'UserService',
 		function($scope, $window, UserService) {
@@ -50,7 +105,7 @@ App.controller('LoginUserController', [ '$scope', '$window', 'UserService',
 					$window.location.href = '/moments/';
 				}).error(function(data) {
 					$scope.showDiv = true;
-					$scope.errorMsg = 'Incorrect Username or Password';
+					$scope.errorMsgs = data;
 				});
 			};
 

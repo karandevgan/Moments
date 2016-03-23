@@ -1,11 +1,8 @@
 package com.moments.web.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,34 +13,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.moments.Dao.AlbumDao;
-import com.moments.Dao.PhotoDao;
-import com.moments.Dao.UserDao;
-import com.moments.model.Album;
-import com.moments.model.Photo;
 import com.moments.model.User;
 import com.moments.service.Service;
+import com.moments.service.ValidationService;
 
 @Controller
 public class RestController {
 	@Autowired
 	private Service service;
-	
+
 	@RequestMapping(value = "/register", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<List<String>> saveUser(@RequestBody User user) {
-		boolean usernameExists = service.isRegistered(user.getUsername());
-		boolean emailExists = service.isEmailRegistered(user.getEmail());
-		HttpStatus status = null;
 		List<String> responseBuilder = new ArrayList<String>();
-		if (usernameExists || emailExists) {
-			if (usernameExists)
-				responseBuilder.add("Username not available");
-			if (emailExists)
-				responseBuilder.add("Email already registered");
-			status = HttpStatus.CONFLICT;
+
+		List<String> errorList = ValidationService.validateRegisteredUser(
+				service, user);
+
+		HttpStatus status = null;
+		if (errorList.size() > 0) {
+			responseBuilder = errorList;
+			status = HttpStatus.NOT_ACCEPTABLE;
 		} else {
 			service.save(user);
 			responseBuilder.add("User Created");
@@ -53,22 +43,56 @@ public class RestController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Void> loginUser(@RequestBody User user, HttpSession session) {
-		if (service.getUser(user) != null) {
-			session.setAttribute("username", user.getUsername());
-			return new ResponseEntity<Void>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+	public ResponseEntity<List<String>> loginUser(@RequestBody User user,
+			HttpSession session) {
+		List<String> responseList = new ArrayList<String>();
+
+		List<String> errorList = ValidationService.validateSigninUser(service,
+				user);
+		if (errorList.size() == 0) {
+			if (service.getUser(user) != null) {
+				session.setAttribute("username", user.getUsername());
+				responseList.add("User returned");
+				return new ResponseEntity<List<String>>(responseList,
+						HttpStatus.OK);
+			} else {
+				errorList.add("Incorrect username or password.");
+			}
 		}
+		System.out.println(errorList.size());
+		return new ResponseEntity<List<String>>(errorList,
+				HttpStatus.BAD_REQUEST);
 	}
 
-	@RequestMapping(value = "/validateUser", method = RequestMethod.GET)
-	public boolean isUserRegistered(@RequestParam String username) {
-		return service.isRegistered(username);
+	@RequestMapping(value = "/validateuser", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> isUserRegistered(
+			@RequestParam String username) {
+		HttpStatus returnStatus = null;
+		List<String> responseList = new ArrayList<String>();
+		if (service.isRegistered(username)) {
+			responseList.add("Username already exists");
+			returnStatus = HttpStatus.CONFLICT;
+		}
+		else {
+			responseList.add("Username is available");
+			returnStatus = HttpStatus.OK;
+		}
+		return new ResponseEntity<List<String>>(responseList, returnStatus);
 	}
 
-	@RequestMapping(value = "/userEmailValidation", method = RequestMethod.GET)
-	public boolean isEmailRegistered(@RequestParam String email) {
-		return service.isEmailRegistered(email);
+	@RequestMapping(value = "/emailvalidation", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> isEmailRegistered(@RequestParam String email) {
+		HttpStatus returnStatus=null;
+		List<String> responseList= new ArrayList<String>();
+		if(service.isEmailRegistered(email)){
+			responseList.add("Email already Registered");
+			returnStatus=HttpStatus.CONFLICT;
+		}
+		else
+		{
+			responseList.add("Email available");
+			returnStatus= HttpStatus.OK;
+		}
+		return new ResponseEntity<List<String>>(responseList,returnStatus);
 	}
 }

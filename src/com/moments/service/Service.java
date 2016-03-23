@@ -29,6 +29,7 @@ public class Service {
 	@Autowired
 	private AlbumDao albumDao;
 
+	@SuppressWarnings("rawtypes")
 	private Map config = ObjectUtils.asMap("cloud_name", "kaydewgun", "api_key", "757818147311579", "api_secret",
 			"Jo1xhkKMAiHSMa1ySvSc48r6qlQ");
 
@@ -105,6 +106,7 @@ public class Service {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Transactional
 	public boolean uploadImage(Album album, User user, MultipartFile file) {
 		File temp = null;
