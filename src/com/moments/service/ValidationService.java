@@ -3,6 +3,7 @@ package com.moments.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.moments.model.Album;
 import com.moments.model.User;
 
 public class ValidationService {
@@ -38,7 +39,7 @@ public class ValidationService {
 			String emailErrorMsg = "Enter a valid email";
 			errorsList.add(emailErrorMsg);
 		} else {
-			if(service.isEmailRegistered(user.getEmail())) {
+			if (service.isEmailRegistered(user.getEmail())) {
 				String emailErrorMsg = "Email already registered";
 				errorsList.add(emailErrorMsg);
 			}
@@ -52,22 +53,44 @@ public class ValidationService {
 
 		return errorsList;
 	}
-	
-	public static List<String> validateSigninUser(Service service,User user)
-	{
+
+	public static List<String> validateSigninUser(Service service, User user) {
 		List<String> errorList = new ArrayList<String>();
-		String username= user.getUsername().trim();
-		if(username.equals(""))
-		{
-			String usernameErrorMsg="Username is required";
+		String username = user.getUsername().trim();
+		if (username.equals("")) {
+			String usernameErrorMsg = "Username is required";
 			errorList.add(usernameErrorMsg);
 		}
 		String password = user.getPassword().trim();
-		if(password.equals(""))
-		{
+		if (password.equals("")) {
 			String passwordErrorMsg = "Password is required";
 			errorList.add(passwordErrorMsg);
 		}
 		return errorList;
-	} 
- }
+	}
+
+	public static List<String> validateAlbumName(Service service, Album album,
+			User user) {
+		List<String> errorList = new ArrayList<String>();
+		String albumName = album.getAlbum_name();
+		boolean isValid = true;
+		String albumstatus = "";
+		if (albumName.equals("")) {
+			albumstatus = "Album Name cannot be empty";
+			isValid = false;
+		} else {
+			if (albumName.matches("^[A-Z0-9].{2,18}[^\\s]$")) {
+				if (!service.isAlbumAvailable(user.getUser_id(),
+						album.getAlbum_name())) {
+					albumstatus = "Another album with same name already exists";
+					isValid = false;
+				}
+			} else {
+				albumstatus = "Must start with uppercase letter or digit and should be between 3 digits to 20";
+			}
+		}
+		if (!isValid)
+			errorList.add(albumstatus);
+		return errorList;
+	}
+}

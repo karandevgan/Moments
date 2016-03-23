@@ -1,5 +1,6 @@
 package com.moments.web.controller;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import com.moments.model.Album;
 import com.moments.model.Photo;
 import com.moments.model.User;
 import com.moments.service.Service;
+import com.moments.service.ValidationService;
 
 @RequestMapping("/user")
 @Controller
@@ -28,21 +30,32 @@ public class UserController {
 
 	@Autowired
 	private Service service;
-	
+
 	HttpSession session;
 
-	@RequestMapping(value = "/album/create", method = RequestMethod.POST, produces = "text/plain", consumes = "application/json")
-	public ResponseEntity<String> saveAlbum(@RequestBody Album album,
+	@RequestMapping(value = "/album/create", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
+	public ResponseEntity<List<String>> saveAlbum(@RequestBody Album album,
 			HttpSession session) {
 		User user = service
 				.getUser(session.getAttribute("username").toString());
-		if (service.createAlbum(user, album))
-			return new ResponseEntity<String>("Album Created",
-					HttpStatus.CREATED);
-		else {
-			return new ResponseEntity<String>("Error creating album",
-					HttpStatus.INTERNAL_SERVER_ERROR);
+		List<String> responseList = null;
+		List<String> errorList = ValidationService.validateAlbumName(service,
+				album, user);
+		HttpStatus status = null;
+		if (errorList.size() > 0) {
+			responseList = errorList;
+			status = HttpStatus.CONFLICT;
+		} else {
+			responseList = new ArrayList<String>();
+			if (service.createAlbum(user, album)) {
+				responseList.add("Album Created");
+				status = HttpStatus.CREATED;
+			} else {
+				responseList.add("Error Creating Album");
+				status = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
 		}
+		return new ResponseEntity<List<String>>(responseList, status);
 	}
 
 	@RequestMapping(value = "/album/delete", params = { "album_id" }, produces = "application/json")
@@ -81,8 +94,8 @@ public class UserController {
 	public ResponseEntity<List<Photo>> getPhotos(HttpServletRequest req,
 			HttpSession session) {
 		try {
-			User user = service.getUser(
-					session.getAttribute("username").toString());
+			User user = service.getUser(session.getAttribute("username")
+					.toString());
 			int album_id = Integer.parseInt(req.getParameter("album_id"));
 			int call = Integer.parseInt(req.getParameter("call"));
 			ResponseEntity<List<Photo>> returnEntity = new ResponseEntity<List<Photo>>(
@@ -126,4 +139,5 @@ public class UserController {
 			return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
 		}
 	}
+
 }

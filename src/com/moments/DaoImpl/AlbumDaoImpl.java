@@ -3,11 +3,6 @@ package com.moments.DaoImpl;
 import java.util.Date;
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
-import org.hibernate.Query;
-import org.hibernate.Session;
-
 import com.moments.Dao.AlbumDao;
 import com.moments.hibernateDaoSupport.CustomHibernateDaoSupport;
 import com.moments.model.Album;
@@ -41,6 +36,7 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public List<Album> getAlbums(int user_id) {
 		String hql = "from Album where user_id=?";
@@ -55,6 +51,18 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 	public Album getAlbum(int i) {
 		String hql = "from Album where album_id=?";
 		return (Album) getHibernateTemplate().find(hql, i).get(0);
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public boolean isAlbumAvailable(int user_id, String album_name) {
+		boolean status = true;
+		String hql = "from Album where album_name=? and user_id=?";
+		List albums = getHibernateTemplate().find(hql, album_name, user_id);
+		if (albums.size() > 0) {
+			status = false;
+		}
+		return status;
 	}
 
 }

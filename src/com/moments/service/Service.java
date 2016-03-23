@@ -75,6 +75,8 @@ public class Service {
 		return userDao.update(user);
 
 	}
+	
+	
 
 	@Transactional
 	public boolean createAlbum(User user, Album album) {
@@ -159,5 +161,11 @@ public class Service {
 	@Transactional
 	public List<Photo> getPhotos(int album_id, User user, int call) {
 		return photoDao.getPhotos(albumDao.getAlbum(album_id), user, call);
+	}
+	
+	@Transactional
+	public boolean isAlbumAvailable(int user_id,String album_name)
+	{
+		return albumDao.isAlbumAvailable(user_id, album_name);
 	}
 }

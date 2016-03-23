@@ -17,6 +17,6 @@ public interface AlbumDao {
 
 	public Album getAlbum(int i);
 	
-	
+	public boolean isAlbumAvailable(int user_id,String album_name);
 	
 }

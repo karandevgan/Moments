@@ -17,7 +17,7 @@ App
 
 							$scope.isUserNameValid = false;
 							$scope.isPasswordMatching = false;
-							$scope.isEmailValid=false;
+							$scope.isEmailValid = false;
 							this.showGenderError = false;
 
 							this.createUser = function(user) {
@@ -43,6 +43,7 @@ App
 											.success(
 													function(response) {
 														$scope.usernameStatus = response[0];
+														$scope.showUsernameStatus = false;
 														$scope.isUserNameValid = true;
 													})
 											.error(
@@ -54,8 +55,8 @@ App
 									$scope.showUsernameStatus = false;
 								}
 							};
-							
-							this.checkEmail = function(){
+
+							this.checkEmail = function() {
 								if (!$scope.signupForm.email.$error.required
 										&& $scope.signupForm.email.$valid) {
 									$scope.showEmailStatus = true;
@@ -63,14 +64,13 @@ App
 											.checkEmail(this.user.email)
 											.success(
 													function(response) {
+														$scope.showEmailStatus = false;
 														$scope.emailStatus = response[0];
 														$scope.isEmailValid = true;
-													})
-											.error(
-													function(error) {
-														$scope.emailStatus = error[0];
-														$scope.isemailValid = false;
-													});
+													}).error(function(error) {
+												$scope.emailStatus = error[0];
+												$scope.isemailValid = false;
+											});
 								} else {
 									$scope.showEmailStatus = false;
 								}
@@ -81,7 +81,10 @@ App
 									$scope.isPasswordMatching = true;
 								}
 
-								if ($scope.signupForm.$valid && $scope.isPasswordMatching && $scope.isUserNameValid && $scope.isEmailValid)
+								if ($scope.signupForm.$valid
+										&& $scope.isPasswordMatching
+										&& $scope.isUserNameValid
+										&& $scope.isEmailValid)
 									this.createUser(this.user);
 
 								console.log("Submit called");
