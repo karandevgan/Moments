@@ -55,8 +55,8 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 
 		Criteria criteria = getHibernateTemplate().getSessionFactory().getCurrentSession().createCriteria(Photo.class);
 		Criterion album_criteria =  Restrictions.eq("album", album);
-		Criterion user_criteria =  Restrictions.eq("user", user);
-		criteria.add(Restrictions.and(album_criteria, user_criteria));
+//		Criterion user_criteria =  Restrictions.eq("user", user);
+		criteria.add(album_criteria);
 		criteria.setFirstResult(call);
 		criteria.setMaxResults(10);
 		System.out.println(criteria.list().size());

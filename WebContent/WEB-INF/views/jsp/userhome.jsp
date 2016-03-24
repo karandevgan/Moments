@@ -106,6 +106,7 @@
 	</div>
 
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
+	<ng-include src="'/moments/pages/shareAlbumModal.html'"></ng-include>
 
 
 	<script

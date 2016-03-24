@@ -1,20 +1,22 @@
 package com.moments.web.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.util.Base64;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.moments.Dao.AlbumDao;
-import com.moments.Dao.PhotoDao;
-import com.moments.Dao.UserDao;
 import com.moments.model.Album;
-import com.moments.model.User;
 import com.moments.service.Service;
 
 @Controller
@@ -30,9 +32,6 @@ public class ViewController {
 
 	@RequestMapping(value = { "/overview" }, method = RequestMethod.GET)
 	public ModelAndView getUserOverview() {
-		User user = service.getUser(session.getAttribute("username").toString());
-		int number_of_albums = user.getNumber_of_albums();
-		int number_of_photos = service.getTotalPhotos(user);
 		return null;
 	}
 
@@ -61,15 +60,16 @@ public class ViewController {
 		return new ModelAndView("redirect:home");
 	}
 
-	@RequestMapping(value = "/user/album/{album_id}")
-	public ModelAndView showAlbum(@PathVariable int album_id) {
+	@RequestMapping(value = "/user/album/{album_name}")
+	public ModelAndView showAlbum(@PathVariable String album_name) {
 		if (session.getAttribute("username") == null) {
 			return new ModelAndView("redirect:" + redirectHome);
 		}
+		String username = session.getAttribute("username").toString();
 		ModelAndView mv = new ModelAndView();
-		Album album = service.getAlbum(album_id);
+		Album album = service.getAlbum(album_name, service.getUser(username).getUser_id());
+		
 		if (album != null) {
-			mv.addObject("album_id", album_id);
 			mv.addObject("album_name", album.getAlbum_name());
 			mv.setViewName("showAlbum");
 		} else {
@@ -78,16 +78,16 @@ public class ViewController {
 		return mv;
 	}
 
-	@RequestMapping(value = "/user/upload/{album_id}")
-	public ModelAndView uploadImage(@PathVariable int album_id) {
+	@RequestMapping(value = "/user/upload/{album_name}")
+	public ModelAndView uploadImage(@PathVariable String album_name) {
 		if (session.getAttribute("username") == null) {
 			return new ModelAndView("redirect:" + redirectHome);
 		}
+		String username = session.getAttribute("username").toString();
 		ModelAndView mv = new ModelAndView();
-		Album album = service.getAlbum(album_id);
+		Album album = service.getAlbum(album_name, service.getUser(username).getUser_id());
 		if (album != null) {
 			mv.addObject("album_name", album.getAlbum_name());
-			mv.addObject("album_id", album_id);
 			mv.setViewName("uploadImage");
 		} else {
 			mv.setViewName("404");
@@ -109,5 +109,31 @@ public class ViewController {
 			return new ModelAndView("redirect:" + redirectHome);
 		}
 		return new ModelAndView("profile");
+	}
+	
+	@RequestMapping(value = "/sharealbum/{album_link}")
+	public ModelAndView shareAlbumUsingLink(
+			@PathVariable String album_link, HttpServletRequest req) {
+		ModelAndView mv = new ModelAndView();
+		System.out.println("Inside share link");
+		if (album_link != null) {
+			try {
+				byte[] data = Base64.getUrlDecoder().decode(album_link);
+				ByteArrayInputStream bais = new ByteArrayInputStream(data);
+				ObjectInputStream ois = new ObjectInputStream(bais);
+
+				Album album = (Album) ois.readObject();
+				if (album != null) {
+					
+				} else {
+					
+				}
+			} catch (Exception e) {
+				
+			}
+		} else {
+			returnEntity = new ResponseEntity<Album>(HttpStatus.BAD_REQUEST);
+		}
+		return returnEntity;
 	}
 }

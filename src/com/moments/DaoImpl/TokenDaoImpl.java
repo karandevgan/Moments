@@ -23,18 +23,29 @@ public class TokenDaoImpl extends CustomHibernateDaoSupport implements TokenDao 
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public boolean isTokenValid(String token_value, User user) {
+	public boolean isTokenValid(String token_value) {
 		boolean isValid = false;
 		Date presentDate = new Date();
-		String hql = "from Token where token_value=? and user_id=?";
-		List tokenList = getHibernateTemplate().find(hql, token_value, user.getUser_id());
+		String hql = "from Token where token_value=?";
+		List tokenList = getHibernateTemplate().find(hql, token_value);
 		if (tokenList.size() > 0) {
-			Date creation_date = ((Token)tokenList.get(0)).getCreation_date();
-			int expiry_minutes = ((Token)tokenList.get(0)).getExpiry_minutes();
+			Date creation_date = ((Token) tokenList.get(0)).getCreation_date();
+			int expiry_minutes = ((Token) tokenList.get(0)).getExpiry_minutes();
 			if (presentDate.getTime() - creation_date.getTime() < expiry_minutes) {
 				isValid = true;
 			}
 		}
 		return isValid;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public User getUser(String token_value) {
+		String hql = "select T.user from Token T where T.token_value=?";
+		List tokenList = getHibernateTemplate().find(hql, token_value);
+		if (tokenList.size() > 0) {
+			return (User)tokenList.get(0);
+		}
+		return null;
 	}
 }

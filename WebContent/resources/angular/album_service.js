@@ -22,7 +22,6 @@ App.factory('AlbumService',
 				'$http',
 				'$q',
 				function($http, $q) {
-					$http.defaults.headers.common = { "Auth-Token" : sessionStorage.getItem("auth-token") };
 					return {
 						createAlbum : function(album) {
 							return $http.post("/moments/user/album/create",
@@ -37,10 +36,12 @@ App.factory('AlbumService',
 								return data;
 							});
 						},
-						getAlbum : function(id, call) {
+						getAlbum : function(album_name, call) {
+							console.log("album name: " + album_name);
+							console.log("album call: " + call);
 							return $http.get("/moments/user/album", {
 								params : {
-									album_id : id,
+									album_name : album_name,
 									call : call
 								}
 							}).success(function(response) {
@@ -60,9 +61,9 @@ App.factory('AlbumService',
 							});
 						},
 
-						uploadFile : function(album_id, formData) {
-							var url = '/moments/user/upload?album_id='
-									+ album_id;
+						uploadFile : function(album_name, formData) {
+							var url = '/moments/user/upload?album_name='
+									+ album_name;
 							return $http.post(url, formData, {
 								transformRequest : angular.identity,
 								headers : {
@@ -77,10 +78,9 @@ App.factory('AlbumService',
 							});
 						},
 
-						deleteAlbum : function(album_id) {
-							var url = '/moments/user/album/delete?album_id='
-									+ album_id;
-							console.log(url);
+						deleteAlbum : function(album_name) {
+							var url = '/moments/user/album/delete?album_name='
+									+ album_name;
 							return $http.get(url).success(
 									function(responseData, status) {
 										return responseData;
@@ -99,6 +99,19 @@ App.factory('AlbumService',
 										return responseData;
 									}).error(function(data, status) {
 								console.error("Error while downloading album");
+								return data;
+							});
+						}, 
+						
+						createAlbumLink : function(album_name) {
+							var url = '/moments/user/album/createlink/'
+									+ album_name;
+							console.log(url);
+							return $http.get(url).success(
+									function(responseData, status) {
+										return responseData;
+									}).error(function(data, status) {
+								console.error("Error creating link");
 								return data;
 							});
 						}

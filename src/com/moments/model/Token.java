@@ -23,7 +23,7 @@ public class Token implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int token_id;
 	
-	@Column(nullable=false, unique=true, columnDefinition="text")
+	@Column(nullable=false, unique=true)
 	private String token_value;
 	
 	@Column(nullable=false)

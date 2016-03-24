@@ -27,8 +27,8 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 	}
 
 	@Override
-	public void delete(int album_id) {
-		getHibernateTemplate().delete(getAlbum(album_id));
+	public void delete(String album_name, int user_id) {
+		getHibernateTemplate().delete(getAlbum(album_name, user_id));
 	}
 
 	@Override
@@ -63,6 +63,15 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 			status = false;
 		}
 		return status;
+	}
+
+	@Override
+	public Album getAlbum(String album_name, int user_id) {
+		String hql = "from Album where album_name=? and user_id=?";
+		List albums = getHibernateTemplate().find(hql, album_name, user_id);
+		if (albums.size() > 0)
+			return (Album) albums.get(0);
+		return null;
 	}
 
 }

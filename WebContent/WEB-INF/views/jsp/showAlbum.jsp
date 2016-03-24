@@ -56,7 +56,7 @@
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
 						<li><a href="/moments/user/allphotos">All Photos</a></li>
-						<li><a href="/moments/user/upload/${album_id}">Upload
+						<li><a href="/moments/user/upload/${album_name}">Upload
 								Photos</a></li>
 					</ul>
 
@@ -99,7 +99,7 @@
 					</ul>
 				</nav>
 				<div ng-controller="GetAlbumController as ctrl"
-					ng-init="ctrl.getAlbum(${album_id})">
+					ng-init="ctrl.getAlbum('${album_name}')">
 					<ng-include src="albumPhotos"> <img
 						src="/moments/resources/static/loader.gif" /></ng-include>
 

@@ -92,12 +92,12 @@
 				<nav>
 					<ul class="breadcrumb">
 						<li><a href="/moments/">Home</a></li>
-						<li><a href="/moments/user/album/${album_id}">${album_name}</a></li>
+						<li><a href="/moments/user/album/${album_name}">${album_name}</a></li>
 						<li class="active">Upload</li>
 					</ul>
 				</nav>
 				<div ng-controller="UploadController as ctrl"
-					ng-init="album_id = ${album_id}" ng-cloak>
+					ng-init="album_name='${album_name}'" ng-cloak>
 					<div class="alert alert-warning" role="alert"
 						ng-show="showErrorDiv">
 						<ul>

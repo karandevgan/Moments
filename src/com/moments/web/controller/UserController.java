@@ -1,6 +1,11 @@
 package com.moments.web.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,100 +41,218 @@ public class UserController {
 	HttpSession session;
 
 	@RequestMapping(value = "/album/create", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<List<String>> saveAlbum(@RequestBody Album album,
-			@RequestHeader(value = "Auth-Token", required=false) String token_value) {
-		
-		User user = service.getUser(session.getAttribute("username").toString());
-		List<String> responseList = null;
-		List<String> errorList = ValidationService.validateAlbumName(service, album, user);
+	public ResponseEntity<List<String>> saveAlbum(
+			@RequestBody Album album,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+
+		user = service.getUser(token_value, sessionUser);
+
+		List<String> responseList = new ArrayList<String>();
 		HttpStatus status = null;
-		if (errorList.size() > 0) {
-			responseList = errorList;
-			status = HttpStatus.CONFLICT;
-		} else {
-			responseList = new ArrayList<String>();
-			if (service.createAlbum(user, album)) {
-				responseList.add("Album Created");
-				status = HttpStatus.CREATED;
+		if (user != null) {
+			List<String> errorList = ValidationService.validateAlbumName(
+					service, album, user);
+			if (errorList.size() > 0) {
+				responseList = errorList;
+				status = HttpStatus.CONFLICT;
 			} else {
-				responseList.add("Error Creating Album");
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
+				if (service.createAlbum(user, album)) {
+					responseList.add("Album Created");
+					status = HttpStatus.CREATED;
+				} else {
+					responseList.add("Error Creating Album");
+					status = HttpStatus.INTERNAL_SERVER_ERROR;
+				}
 			}
+		} else {
+			responseList.add("Unauthorized");
+			status = HttpStatus.UNAUTHORIZED;
 		}
+
 		return new ResponseEntity<List<String>>(responseList, status);
 	}
 
-	@RequestMapping(value = "/album/delete", params = { "album_id" }, produces = "application/json")
-	public ResponseEntity<Void> deleteAlbum(HttpSession session, HttpServletRequest req) {
-		int album_id = Integer.parseInt(req.getParameter("album_id"));
-		String album_to_delete = session.getAttribute("username").toString() + "/"
-				+ service.getAlbum(album_id).getAlbum_name();
-		User user = service.getUser(session.getAttribute("username").toString());
-		boolean album_deleted = service.deleteAlbum(album_to_delete, album_id, user);
-		if (album_deleted)
-			return new ResponseEntity<Void>(HttpStatus.OK);
-		else
-			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+	@RequestMapping(value = "/album/delete", params = { "album_name" }, produces = "application/json")
+	public ResponseEntity<Void> deleteAlbum(
+			HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+
+		user = service.getUser(token_value, sessionUser);
+
+		if (user != null) {
+			String album_name = req.getParameter("album_name");
+			String album_to_delete = session.getAttribute("username")
+					.toString()
+					+ "/"
+					+ service.getAlbum(album_name, user.getUser_id())
+							.getAlbum_name();
+			boolean album_deleted = service.deleteAlbum(album_to_delete,
+					album_name, user);
+			if (album_deleted)
+				return new ResponseEntity<Void>(HttpStatus.OK);
+			else
+				return new ResponseEntity<Void>(
+						HttpStatus.INTERNAL_SERVER_ERROR);
+		} else {
+			return new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@RequestMapping(value = "/albums", method = RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<List<Album>> getAlbums(HttpSession session) {
-
-		int user_id = service.getUser(session.getAttribute("username").toString()).getUser_id();
-		List<Album> albums = service.getAlbums(user_id);
+	public ResponseEntity<List<Album>> getAlbums(
+			HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
 		HttpStatus returnStatus = null;
-		System.out.println(albums);
-		if (albums != null)
-			returnStatus = HttpStatus.OK;
-		else
-			returnStatus = HttpStatus.NO_CONTENT;
-
+		user = service.getUser(token_value, sessionUser);
+		List<Album> albums = null;
+		if (user != null) {
+			int user_id = user.getUser_id();
+			albums = service.getAlbums(user_id);
+			System.out.println(albums);
+			if (albums != null)
+				returnStatus = HttpStatus.OK;
+			else
+				returnStatus = HttpStatus.NO_CONTENT;
+		} else {
+			returnStatus = HttpStatus.UNAUTHORIZED;
+		}
 		return new ResponseEntity<List<Album>>(albums, returnStatus);
 	}
 
-	@RequestMapping(value = "/album", params = { "album_id", "call" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Photo>> getPhotos(HttpServletRequest req, HttpSession session) {
-		try {
-			User user = service.getUser(session.getAttribute("username").toString());
-			int album_id = Integer.parseInt(req.getParameter("album_id"));
-			int call = Integer.parseInt(req.getParameter("call"));
-			ResponseEntity<List<Photo>> returnEntity = new ResponseEntity<List<Photo>>(
-					service.getPhotos(album_id, user, call), HttpStatus.OK);
-			return returnEntity;
-		} catch (NumberFormatException e) {
-			return new ResponseEntity<List<Photo>>(HttpStatus.BAD_REQUEST);
+	@RequestMapping(value = "/album", params = { "album_name", "call" }, method = RequestMethod.GET)
+	public ResponseEntity<List<Photo>> getPhotos(
+			HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<List<Photo>> returnEntity = null;
+		user = service.getUser(token_value, sessionUser);
+		if (user != null) {
+			try {
+				String album_name = req.getParameter("album_name");
+				int call = Integer.parseInt(req.getParameter("call"));
+				System.out.println(album_name);
+				returnEntity = new ResponseEntity<List<Photo>>(
+						service.getPhotos(album_name, user, call),
+						HttpStatus.OK);
+				return returnEntity;
+			} catch (NumberFormatException e) {
+				returnEntity = new ResponseEntity<List<Photo>>(
+						HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			returnEntity = new ResponseEntity<List<Photo>>(
+					HttpStatus.UNAUTHORIZED);
 		}
+		return returnEntity;
 	}
 
-	@RequestMapping(value = "/upload", params = { "album_id" }, method = RequestMethod.POST)
-	public ResponseEntity<Void> uploadFile(MultipartHttpServletRequest request, HttpSession session) {
-		int album_id = Integer.parseInt(request.getParameter("album_id"));
-		String username = session.getAttribute("username").toString();
-		User user = service.getUser(username);
-		Album album = service.getAlbum(album_id);
+	@RequestMapping(value = "/upload", params = { "album_name" }, method = RequestMethod.POST)
+	public ResponseEntity<Void> uploadFile(
+			MultipartHttpServletRequest request,
+			HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
 
-		Iterator<String> itr = request.getFileNames();
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<Void> returnEntity = null;
+		user = service.getUser(token_value, sessionUser);
 
-		MultipartFile file = request.getFile(itr.next());
+		if (user != null) {
+			String album_name = request.getParameter("album_name");
+			Album album = service.getAlbum(album_name, user.getUser_id());
 
-		if (service.uploadImage(album, user, file)) {
-			return new ResponseEntity<Void>(HttpStatus.CREATED);
+			Iterator<String> itr = request.getFileNames();
+
+			MultipartFile file = request.getFile(itr.next());
+
+			if (service.uploadImage(album, user, file)) {
+				returnEntity = new ResponseEntity<Void>(HttpStatus.CREATED);
+			} else {
+				returnEntity = new ResponseEntity<Void>(
+						HttpStatus.INTERNAL_SERVER_ERROR);
+			}
 		} else {
-			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+			returnEntity = new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
 		}
+		return returnEntity;
 
 	}
 
 	@RequestMapping(value = "/album/download/{album_name}", produces = "text/plain")
-	public ResponseEntity<String> downloadAlbumZip(@PathVariable String album_name) {
-		String download_folder = session.getAttribute("username").toString() + "/" + album_name;
+	public ResponseEntity<String> downloadAlbumZip(
+			@PathVariable String album_name,
+			HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
 
-		String url = service.downloadAlbum(download_folder);
-		if (url != null) {
-			return new ResponseEntity<String>(url, HttpStatus.OK);
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<String> returnEntity = null;
+		user = service.getUser(token_value, sessionUser);
+		if (user != null) {
+			Album album = service.getAlbum(album_name, user.getUser_id());
+			if (album != null) {
+				String download_folder = user.getUsername() + "/" + album_name;
+				String url = service.downloadAlbum(download_folder);
+				returnEntity = new ResponseEntity<String>(url, HttpStatus.OK);
+			} else {
+				returnEntity = new ResponseEntity<String>("Album not found",
+						HttpStatus.NOT_FOUND);
+			}
+
 		} else {
-			return new ResponseEntity<String>("Error", HttpStatus.NOT_FOUND);
+			returnEntity = new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
 		}
+		return returnEntity;
 	}
 
+	@RequestMapping(value = "/album/createlink/{album_name}", produces = "text/plain")
+	public ResponseEntity<String> createAlbumLink(
+			@PathVariable String album_name,
+			HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<String> returnEntity = null;
+		user = service.getUser(token_value, sessionUser);
+		if (user != null) {
+			Album album = service.getAlbum(album_name, user.getUser_id());
+			if (album != null) {
+				try {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					ObjectOutputStream oos = new ObjectOutputStream(baos);
+					oos.writeObject(album);
+					oos.close();
+					String object_link = Base64.getUrlEncoder().encodeToString(
+							baos.toByteArray());
+					System.out.println(object_link);
+					String link = "http://localhost:8080/moments/sharealbum/"
+							+ object_link;
+					returnEntity = new ResponseEntity<String>(link,
+							HttpStatus.OK);
+				} catch (Exception e) {
+					e.printStackTrace();
+					returnEntity = new ResponseEntity<String>(
+							"Error Creating Link",
+							HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} else {
+				returnEntity = new ResponseEntity<String>("Album not found",
+						HttpStatus.NOT_FOUND);
+			}
+
+		} else {
+			returnEntity = new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
+	}
 }

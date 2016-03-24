@@ -81,6 +81,18 @@ public class UserDaoImpl extends CustomHibernateDaoSupport implements UserDao {
 
 	@SuppressWarnings("rawtypes")
 	@Override
+	public User getUser(int user_id) {
+		String hql = "from User where username=? and password=?";
+
+		List users = getHibernateTemplate().find(hql, user_id);
+		if (users.size() > 0)
+			return (User) users.get(0);
+
+		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
 	public User getUser(String username) {
 		if (isRegistered(username)) {
 			String hql = "from User where username=?";
