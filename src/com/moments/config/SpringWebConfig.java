@@ -19,11 +19,14 @@ import org.springframework.web.servlet.view.JstlView;
 
 import com.moments.DaoImpl.AlbumDaoImpl;
 import com.moments.DaoImpl.PhotoDaoImpl;
+import com.moments.DaoImpl.TokenDaoImpl;
 import com.moments.DaoImpl.UserDaoImpl;
 import com.moments.model.Album;
+import com.moments.model.Token;
 import com.moments.model.Photo;
 import com.moments.model.User;
 import com.moments.service.Service;
+
 
 @EnableWebMvc
 // mvc:annotation-driven
@@ -82,7 +85,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 		sf.setHibernateProperties(hibernateProperties);
-		sf.setAnnotatedClasses(User.class, Album.class, Photo.class);
+		sf.setAnnotatedClasses(User.class, Token.class, Album.class, Photo.class);
 		return sf;
 	}
 
@@ -112,7 +115,14 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		photo.setSessionFactory(sessionFactory().getObject());
 		return photo;
 	}
-
+	
+	@Bean
+	public TokenDaoImpl tokenDao() {
+		TokenDaoImpl token = new TokenDaoImpl();
+		token.setSessionFactory(sessionFactory().getObject());
+		return token;
+	}
+	
 	@Bean
 	public Service service() {
 		return new Service();

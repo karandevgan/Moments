@@ -22,7 +22,7 @@ App.factory('AlbumService',
 				'$http',
 				'$q',
 				function($http, $q) {
-
+					$http.defaults.headers.common = { "Auth-Token" : sessionStorage.getItem("auth-token") };
 					return {
 						createAlbum : function(album) {
 							return $http.post("/moments/user/album/create",

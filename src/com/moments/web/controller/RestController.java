@@ -27,8 +27,7 @@ public class RestController {
 	public ResponseEntity<List<String>> saveUser(@RequestBody User user) {
 		List<String> responseBuilder = new ArrayList<String>();
 
-		List<String> errorList = ValidationService.validateRegisteredUser(
-				service, user);
+		List<String> errorList = ValidationService.validateRegisteredUser(service, user);
 
 		HttpStatus status = null;
 		if (errorList.size() > 0) {
@@ -43,37 +42,38 @@ public class RestController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
-	public ResponseEntity<List<String>> loginUser(@RequestBody User user,
-			HttpSession session) {
+	public ResponseEntity<List<String>> loginUser(@RequestBody User user, HttpSession session) {
 		List<String> responseList = new ArrayList<String>();
 
-		List<String> errorList = ValidationService.validateSigninUser(service,
-				user);
+		List<String> errorList = ValidationService.validateSigninUser(service, user);
 		if (errorList.size() == 0) {
 			if (service.getUser(user) != null) {
-				session.setAttribute("username", user.getUsername());
-				responseList.add("User returned");
-				return new ResponseEntity<List<String>>(responseList,
-						HttpStatus.OK);
+				String token = service.getToken(service.getUser(user));
+				if (token != null) {
+					session.setAttribute("username", user.getUsername());
+					responseList.add(token);
+					return new ResponseEntity<List<String>>(responseList, HttpStatus.OK);
+				}
+				else {
+					responseList.add("Error Generating Token");
+					return new ResponseEntity<List<String>>(responseList, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
 			} else {
 				errorList.add("Incorrect username or password.");
 			}
 		}
 		System.out.println(errorList.size());
-		return new ResponseEntity<List<String>>(errorList,
-				HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<List<String>>(errorList, HttpStatus.UNAUTHORIZED);
 	}
 
 	@RequestMapping(value = "/validateuser", method = RequestMethod.GET)
-	public ResponseEntity<List<String>> isUserRegistered(
-			@RequestParam String username) {
+	public ResponseEntity<List<String>> isUserRegistered(@RequestParam String username) {
 		HttpStatus returnStatus = null;
 		List<String> responseList = new ArrayList<String>();
 		if (service.isRegistered(username)) {
 			responseList.add("Username already exists");
 			returnStatus = HttpStatus.CONFLICT;
-		}
-		else {
+		} else {
 			responseList.add("Username is available");
 			returnStatus = HttpStatus.OK;
 		}
@@ -82,19 +82,16 @@ public class RestController {
 
 	@RequestMapping(value = "/emailvalidation", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> isEmailRegistered(@RequestParam String email) {
-		HttpStatus returnStatus=null;
-		List<String> responseList= new ArrayList<String>();
-		if(service.isEmailRegistered(email)){
+		HttpStatus returnStatus = null;
+		List<String> responseList = new ArrayList<String>();
+		if (service.isEmailRegistered(email)) {
 			responseList.add("Email already Registered");
-			returnStatus=HttpStatus.CONFLICT;
-		}
-		else
-		{
+			returnStatus = HttpStatus.CONFLICT;
+		} else {
 			responseList.add("Email available");
-			returnStatus= HttpStatus.OK;
+			returnStatus = HttpStatus.OK;
 		}
-		return new ResponseEntity<List<String>>(responseList,returnStatus);
+		return new ResponseEntity<List<String>>(responseList, returnStatus);
 	}
-	
 
 }

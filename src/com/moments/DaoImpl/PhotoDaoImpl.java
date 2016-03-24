@@ -46,6 +46,7 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 		return returnValue;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Photo> getPhotos(Album album, User user, int call) {
 		// String hql = "from Photo where album_id=? and user_id=?";
@@ -62,6 +63,7 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 		return criteria.list();
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public int getTotalPhotos(User user) {
 		String hql = "from Photo where user_id=?";

@@ -6,7 +6,7 @@ App.factory('UserService', [
 			return {
 				createUser : function(user) {
 					return $http.post("/moments/register", user).success(
-							function(data) {
+							function(data, status) {
 								return data;
 							}).error(function(data, status) {
 						console.error('Error while creating user');
@@ -15,7 +15,7 @@ App.factory('UserService', [
 				},
 				getUser : function(user) {
 					return $http.post("/moments/login", user).success(
-							function(response) {
+							function(response, status) {
 								return response;
 							}).error(function(data, status) {
 						console.error('Error while logging in');

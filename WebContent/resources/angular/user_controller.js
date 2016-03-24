@@ -105,6 +105,8 @@ App.controller('LoginUserController', [ '$scope', '$window', 'UserService',
 			this.getUser = function(user) {
 
 				UserService.getUser(user).success(function(response) {
+					sessionStorage.setItem("auth-token", response);
+					console.log(sessionStorage.getItem("auth-token"));
 					$window.location.href = '/moments/';
 				}).error(function(data) {
 					$scope.showDiv = true;

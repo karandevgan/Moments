@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,16 +32,16 @@ public class UserController {
 	@Autowired
 	private Service service;
 
+	@Autowired
 	HttpSession session;
 
 	@RequestMapping(value = "/album/create", method = RequestMethod.POST, produces = "application/json", consumes = "application/json")
 	public ResponseEntity<List<String>> saveAlbum(@RequestBody Album album,
-			HttpSession session) {
-		User user = service
-				.getUser(session.getAttribute("username").toString());
+			@RequestHeader(value = "Auth-Token", required=false) String token_value) {
+		
+		User user = service.getUser(session.getAttribute("username").toString());
 		List<String> responseList = null;
-		List<String> errorList = ValidationService.validateAlbumName(service,
-				album, user);
+		List<String> errorList = ValidationService.validateAlbumName(service, album, user);
 		HttpStatus status = null;
 		if (errorList.size() > 0) {
 			responseList = errorList;
@@ -59,15 +60,12 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/album/delete", params = { "album_id" }, produces = "application/json")
-	public ResponseEntity<Void> deleteAlbum(HttpSession session,
-			HttpServletRequest req) {
+	public ResponseEntity<Void> deleteAlbum(HttpSession session, HttpServletRequest req) {
 		int album_id = Integer.parseInt(req.getParameter("album_id"));
-		String album_to_delete = session.getAttribute("username").toString()
-				+ "/" + service.getAlbum(album_id).getAlbum_name();
-		User user = service
-				.getUser(session.getAttribute("username").toString());
-		boolean album_deleted = service.deleteAlbum(album_to_delete, album_id,
-				user);
+		String album_to_delete = session.getAttribute("username").toString() + "/"
+				+ service.getAlbum(album_id).getAlbum_name();
+		User user = service.getUser(session.getAttribute("username").toString());
+		boolean album_deleted = service.deleteAlbum(album_to_delete, album_id, user);
 		if (album_deleted)
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		else
@@ -77,8 +75,7 @@ public class UserController {
 	@RequestMapping(value = "/albums", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<List<Album>> getAlbums(HttpSession session) {
 
-		int user_id = service.getUser(
-				session.getAttribute("username").toString()).getUser_id();
+		int user_id = service.getUser(session.getAttribute("username").toString()).getUser_id();
 		List<Album> albums = service.getAlbums(user_id);
 		HttpStatus returnStatus = null;
 		System.out.println(albums);
@@ -91,11 +88,9 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/album", params = { "album_id", "call" }, method = RequestMethod.GET)
-	public ResponseEntity<List<Photo>> getPhotos(HttpServletRequest req,
-			HttpSession session) {
+	public ResponseEntity<List<Photo>> getPhotos(HttpServletRequest req, HttpSession session) {
 		try {
-			User user = service.getUser(session.getAttribute("username")
-					.toString());
+			User user = service.getUser(session.getAttribute("username").toString());
 			int album_id = Integer.parseInt(req.getParameter("album_id"));
 			int call = Integer.parseInt(req.getParameter("call"));
 			ResponseEntity<List<Photo>> returnEntity = new ResponseEntity<List<Photo>>(
@@ -107,8 +102,7 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/upload", params = { "album_id" }, method = RequestMethod.POST)
-	public ResponseEntity<Void> uploadFile(MultipartHttpServletRequest request,
-			HttpSession session) {
+	public ResponseEntity<Void> uploadFile(MultipartHttpServletRequest request, HttpSession session) {
 		int album_id = Integer.parseInt(request.getParameter("album_id"));
 		String username = session.getAttribute("username").toString();
 		User user = service.getUser(username);
@@ -127,10 +121,8 @@ public class UserController {
 	}
 
 	@RequestMapping(value = "/album/download/{album_name}", produces = "text/plain")
-	public ResponseEntity<String> downloadAlbumZip(
-			@PathVariable String album_name) {
-		String download_folder = session.getAttribute("username").toString()
-				+ "/" + album_name;
+	public ResponseEntity<String> downloadAlbumZip(@PathVariable String album_name) {
+		String download_folder = session.getAttribute("username").toString() + "/" + album_name;
 
 		String url = service.downloadAlbum(download_folder);
 		if (url != null) {

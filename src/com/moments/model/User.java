@@ -64,6 +64,7 @@ public class User implements Serializable {
 	@JsonManagedReference
 	private List<Photo> myPhotos;
 	
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JsonManagedReference
@@ -74,6 +75,10 @@ public class User implements Serializable {
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="tblSharedImages", joinColumns = {@JoinColumn(name="user_id")}, inverseJoinColumns = {@JoinColumn(name="photo_id")})
 	private Set<Photo> shared_images;
+	
+	@JsonIgnore
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<Token> tokens;
 	
 	public int getUser_id() {
 		return user_id;
@@ -177,5 +182,13 @@ public class User implements Serializable {
 
 	public void setShared_images(Set<Photo> shared_images) {
 		this.shared_images = shared_images;
+	}
+
+	public List<Token> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(List<Token> tokens) {
+		this.tokens = tokens;
 	}
 }

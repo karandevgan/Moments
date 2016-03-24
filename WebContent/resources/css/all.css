@@ -17,25 +17,31 @@ body {
 		height: 100px;
 		width: auto;
 	}
-	@media ( min-width : 600px ) {
-		.thumbnail>a>img {
-			height: 150px;
-			width: auto;
-		}
+}
+
+@media ( min-width : 600px ) {
+	.thumbnail>a>img {
+		height: 150px;
+		width: auto;
 	}
-	@media ( min-width : 1024px) {
-		.thumbnail>a>img {
-			height: 200px;
-			width: auto;
-		}
+}
+
+@media ( min-width : 1024px) {
+	.thumbnail>a>img {
+		height: 200px;
+		width: auto;
 	}
-	.thumbnail .caption {
-		text-align: center;
-	}
-	.thumbnail :LINK {
-		text-decoration: none;
-	}
-	.thumbnail:HOVER {
-		box-shadow: 0px 0px 15px #888888;
-	}
+}
+
+.thumbnail .caption {
+	text-align: center;
+}
+
+.thumbnail :LINK {
+	text-decoration: none;
+}
+
+.thumbnail:HOVER {
+	box-shadow: 0px 0px 15px #888888;
+}
 }
