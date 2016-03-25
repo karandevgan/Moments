@@ -68,6 +68,7 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 			this.createAlbumLink = function(album_name) {
 				AlbumService.createAlbumLink(album_name).success(function(response) {
 					console.log(response);
+					$scope.shareAlbumLink = response;
 				}).error(function(response){
 					console.error(response);
 				});
@@ -107,6 +108,27 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 					console.error("Error");
 				}).finally(function() {
 					$scope.albumPhotos = "/moments/pages/albumPhotos.html";
+					console.log($scope.albumData);
+				});
+			};
+			
+			this.getSharedAlbum = function(album_id, album_name) {
+				AlbumService.getSharedAlbum(album_id, album_name, this.call).success(function(response) {
+					console.log("Album called");
+					$scope.photos = response;
+					console.log($scope.photos.length);
+					if ($scope.photos.length > 0){
+						$scope.page_header_text = "Photos in album";
+						this.call += $scope.photos.length + 1;
+						$scope.albumPhotos = "/moments/pages/albumPhotoShared.html";
+					} else {
+						$scope.page_header_text = "No photos in this album";
+					}
+				}).error(function(data) {
+					$scope.page_header_text = "Error retrieving album";
+					console.error("Error");
+				}).finally(function() {
+					$scope.albumPhotos = "/moments/pages/albumPhotoShared.html";
 					console.log($scope.albumData);
 				});
 			};

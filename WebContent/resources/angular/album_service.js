@@ -1,4 +1,4 @@
-var App = angular.module('myApp', []);
+var App = angular.module('myApp', ['infinite-scroll']);
 
 App.directive('ngFiles', [ '$parse', function($parse) {
 
@@ -42,6 +42,20 @@ App.factory('AlbumService',
 							return $http.get("/moments/user/album", {
 								params : {
 									album_name : album_name,
+									call : call
+								}
+							}).success(function(response) {
+								return response;
+							}).error(function(data, status) {
+								console.error('Error while getting album');
+								return data;
+							});
+						},
+						getSharedAlbum : function(album_id, album_name, call) {
+							return $http.get("/moments/user/sharedalbum", {
+								params : {
+									album_id : album_id,
+									album_name: album_name,
 									call : call
 								}
 							}).success(function(response) {

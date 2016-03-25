@@ -17,6 +17,8 @@ public interface AlbumDao {
 	List<Album> getAlbums(int user_id);
 
 	Album getAlbum(int album_id);
+	
+	Album getAlbum(int album_id, String album_name);
 
 	boolean isAlbumAvailable(int user_id, String album_name);
 

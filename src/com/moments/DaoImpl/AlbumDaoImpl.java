@@ -47,12 +47,6 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 			return null;
 	}
 
-	@Override
-	public Album getAlbum(int i) {
-		String hql = "from Album where album_id=?";
-		return (Album) getHibernateTemplate().find(hql, i).get(0);
-	}
-
 	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean isAlbumAvailable(int user_id, String album_name) {
@@ -65,6 +59,7 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 		return status;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Album getAlbum(String album_name, int user_id) {
 		String hql = "from Album where album_name=? and user_id=?";
@@ -74,4 +69,23 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 		return null;
 	}
 
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Album getAlbum(int album_id, String album_name) {
+		String hql = "from Album where album_id=? and album_name=?";
+		List albums = getHibernateTemplate().find(hql, album_id, album_name);
+		if (albums.size() > 0)
+			return (Album) albums.get(0);
+		return null;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Album getAlbum(int album_id) {
+		String hql = "from Album where album_id=?";
+		List albums = getHibernateTemplate().find(hql, album_id);
+		if (albums.size() > 0)
+			return (Album) albums.get(0);
+		return null;
+	}
 }

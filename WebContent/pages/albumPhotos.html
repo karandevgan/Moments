@@ -3,7 +3,7 @@
 	<div class="thumbnail">
 		<a href="#" data-target="#{{ photo.id }}" role="button"
 			data-keyboard="false" data-toggle="modal"><img
-			src="{{ photo.thumbPath }}" /> </a>
+			src="{{ photo.thumb_path }}" /> </a>
 
 	</div>
 
@@ -13,13 +13,26 @@
 
 			<!--Login Modal content-->
 			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-
-
 				<div class="modal-body">
-					<img src="{{ photo.path }}" height="100%" width="100%" />
+					<div>
+						<nav class="navbar navbar-default">
+							<div class="container">
+								<!-- Collect the nav links, forms, and other content for toggling -->
+								<div class="collapse navbar-collapse"
+									id="bs-example-navbar-collapse-1">
+									<ul class="nav navbar-nav">
+										<li><a href="{{photo.path}}">Download</a></li>
+										<li><a href="#">Delete</a></li>
+										<li><a href="#">Share</a></li>
+									</ul>
+									<ul class="nav navbar-nav navbar-right">
+										<li><a role="button" class="close" data-dismiss="modal">&times;</a></li>
+									</ul>
+								</div>
+							</div>
+						</nav>
+					</div>
+					<img style="max-width: 100%;" src="{{ photo.path }}" />
 				</div>
 				<div class="modal-footer"></div>
 

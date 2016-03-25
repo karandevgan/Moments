@@ -62,6 +62,18 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 		System.out.println(criteria.list().size());
 		return criteria.list();
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Photo> getPhotos(Album album, int call) {
+		Criteria criteria = getHibernateTemplate().getSessionFactory().getCurrentSession().createCriteria(Photo.class);
+		Criterion album_criteria =  Restrictions.eq("album", album);
+		criteria.add(album_criteria);
+		criteria.setFirstResult(call);
+		criteria.setMaxResults(10);
+		System.out.println(criteria.list().size());
+		return criteria.list();
+	}
 
 	@SuppressWarnings("rawtypes")
 	@Override

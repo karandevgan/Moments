@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +21,7 @@ import com.moments.service.Service;
 public class ViewController {
 
 	private String redirectHome = "http://localhost:8080/moments";
-	
+
 	@Autowired
 	private Service service;
 
@@ -68,7 +66,7 @@ public class ViewController {
 		String username = session.getAttribute("username").toString();
 		ModelAndView mv = new ModelAndView();
 		Album album = service.getAlbum(album_name, service.getUser(username).getUser_id());
-		
+
 		if (album != null) {
 			mv.addObject("album_name", album.getAlbum_name());
 			mv.setViewName("showAlbum");
@@ -110,10 +108,9 @@ public class ViewController {
 		}
 		return new ModelAndView("profile");
 	}
-	
+
 	@RequestMapping(value = "/sharealbum/{album_link}")
-	public ModelAndView shareAlbumUsingLink(
-			@PathVariable String album_link, HttpServletRequest req) {
+	public ModelAndView shareAlbumUsingLink(@PathVariable String album_link, HttpServletRequest req) {
 		ModelAndView mv = new ModelAndView();
 		System.out.println("Inside share link");
 		if (album_link != null) {
@@ -123,17 +120,15 @@ public class ViewController {
 				ObjectInputStream ois = new ObjectInputStream(bais);
 
 				Album album = (Album) ois.readObject();
-				if (album != null) {
-					
-				} else {
-					
-				}
+				mv.setViewName("showSharedAlbum");
+				mv.addObject("album_name", album.getAlbum_name());
+				mv.addObject("album_id", album.getAlbum_id());
 			} catch (Exception e) {
-				
+				mv.setViewName("404");
 			}
 		} else {
-			returnEntity = new ResponseEntity<Album>(HttpStatus.BAD_REQUEST);
+			mv.setViewName("400");
 		}
-		return returnEntity;
+		return mv;
 	}
 }

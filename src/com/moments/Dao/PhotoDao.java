@@ -21,4 +21,6 @@ public interface PhotoDao {
 	public boolean isRegistered(int album_id);
 	
 	List<Photo> getPhotos(Album album, User user, int call);
+
+	List<Photo> getPhotos(Album album, int call);
 }

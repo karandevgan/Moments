@@ -13,8 +13,11 @@
 <link href="/moments/resources/css/signin.css" rel="stylesheet">
 <link href="/moments/resources/css/all.css" rel="stylesheet">
 
-<script
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="/moments/resources/angular/ng-infinite-scroll.min.js"></script>
 <script src="/moments/resources/angular/album_service.js"></script>
 <script src="/moments/resources/angular/album_controller.js"></script>
 </head>
@@ -94,23 +97,21 @@
 						<li class="active">Home</li>
 					</ul>
 				</nav>
-				<div class="alert alert-warning" role="alert" ng-show="showUpdateDiv">
+				<div class="alert alert-warning" role="alert"
+					ng-show="showUpdateDiv">
 					<ul>
 						<li>{{ update }}</li>
 					</ul>
 				</div>
-				<ng-include src="albumData"><img
+				<ng-include src="albumData"> <img
 					src="/moments/resources/static/loader.gif" /></ng-include>
+				<ng-include src="'/moments/pages/shareAlbumModal.html'"></ng-include>
 			</div>
 		</div>
 	</div>
 
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
-	<ng-include src="'/moments/pages/shareAlbumModal.html'"></ng-include>
 
-
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="/moments/resources/js/bootstrap.js"></script>
 </body>
 </html>

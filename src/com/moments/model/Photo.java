@@ -36,6 +36,9 @@ public class Photo implements Serializable {
 	private String thumb_path;
 	
 	@Column(nullable=false)
+	private String slide_path;
+	
+	@Column(nullable=false)
 	private Date creation_date;
 	
 	@JsonIgnore
@@ -81,6 +84,14 @@ public class Photo implements Serializable {
 
 	public void setThumb_path(String thumb_path) {
 		this.thumb_path = thumb_path;
+	}
+
+	public String getSlide_path() {
+		return slide_path;
+	}
+
+	public void setSlide_path(String slide_path) {
+		this.slide_path = slide_path;
 	}
 
 	public Date getCreation_date() {
