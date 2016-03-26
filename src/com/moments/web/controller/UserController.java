@@ -241,4 +241,26 @@ public class UserController {
 		}
 		return returnEntity;
 	}
+
+	@RequestMapping(value = "/photo/delete", params = { "public_id" })
+	public ResponseEntity<Void> deleteFile(HttpServletRequest request,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<Void> returnEntity = null;
+		user = service.getUser(token_value, sessionUser);
+
+		if (user != null) {
+			String public_id = request.getParameter("public_id");
+			if (service.deletePhoto(public_id, user))
+				returnEntity = new ResponseEntity<Void>(HttpStatus.OK);
+			else
+				returnEntity = new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+
+		} else {
+			returnEntity = new ResponseEntity<Void>(HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
+	}
 }

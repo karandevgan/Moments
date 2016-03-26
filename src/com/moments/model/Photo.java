@@ -39,6 +39,9 @@ public class Photo implements Serializable {
 	private String slide_path;
 	
 	@Column(nullable=false)
+	private String public_id;
+	
+	@Column(nullable=false)
 	private Date creation_date;
 	
 	@JsonIgnore
@@ -92,6 +95,14 @@ public class Photo implements Serializable {
 
 	public void setSlide_path(String slide_path) {
 		this.slide_path = slide_path;
+	}
+
+	public String getPublic_id() {
+		return public_id;
+	}
+
+	public void setPublic_id(String public_id) {
+		this.public_id = public_id;
 	}
 
 	public Date getCreation_date() {

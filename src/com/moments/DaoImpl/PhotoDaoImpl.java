@@ -83,4 +83,14 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 		return photos.size();
 	}
 
+	@Override
+	public boolean delete(String public_id, int user_id) {
+		String hql = "delete from Photo where user_id=? and public_id=?";
+		int deletedPhotos = getHibernateTemplate().bulkUpdate(hql, user_id, public_id);
+		if (deletedPhotos > 0)
+			return true;
+		else
+			return false;
+	}
+
 }

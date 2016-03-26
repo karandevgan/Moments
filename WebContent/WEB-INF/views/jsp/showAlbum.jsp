@@ -102,16 +102,22 @@
 					</ul>
 				</nav>
 				<div ng-controller="GetAlbumController as ctrl"
-					ng-init="ctrl.getAlbum('${album_name}')">
-					<ng-include src="albumPhotos"> <img
-						src="/moments/resources/static/loader.gif" /></ng-include>
-
+					infinite-scroll="ctrl.getAlbum('${album_name}')"
+					infinite-scroll-distance="0" infinite-scroll-disabled="busy"
+					ng-cloak>
+					<h1 class="page-header">{{ page_header_text }}</h1>
+					<div class="col-xs-4 col-sm-5 col-md-3" ng-repeat="photo in photos">
+						<ng-include src="albumPhotos"> <img
+							src="/moments/resources/static/loader.gif" /></ng-include>
+					</div>
+					<div class="clearfix"></div>
+					<div ng-show="busy && notComplete">
+						<img src="/moments/resources/static/loader.gif" />Loading data...
+					</div>
 				</div>
-
 			</div>
 		</div>
 	</div>
-
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
 
 	<script src="/moments/resources/js/bootstrap.js"></script>

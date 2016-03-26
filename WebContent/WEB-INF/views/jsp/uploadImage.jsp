@@ -7,8 +7,11 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>Moments | Home</title>
 
-<script
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript"
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="/moments/resources/angular/ng-infinite-scroll.min.js"></script>
 
 <script src="/moments/resources/angular/album_service.js"></script>
 <script src="/moments/resources/angular/album_controller.js"></script>
@@ -129,9 +132,6 @@
 
 
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
-
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 	<script src="/moments/resources/js/bootstrap.js"></script>
 </body>
 </html>

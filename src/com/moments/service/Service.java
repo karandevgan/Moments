@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Api;
 import com.cloudinary.ArchiveParams;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
@@ -106,11 +107,11 @@ public class Service {
 
 	@Transactional
 	public boolean deleteAlbum(String album_to_delete, String album_name, User user) {
-		// Cloudinary cloudinary = new Cloudinary(config);
-		// Api api = cloudinary.api();
+		Cloudinary cloudinary = new Cloudinary(config);
+		Api api = cloudinary.api();
 		try {
-			// api.deleteResourcesByPrefix(album_to_delete,
-			// ObjectUtils.emptyMap());
+			api.deleteResourcesByPrefix(album_to_delete,
+			ObjectUtils.emptyMap());
 			albumDao.delete(album_name, user.getUser_id());
 			user.setNumber_of_albums(user.getNumber_of_albums() - 1);
 			update(user);
@@ -120,6 +121,18 @@ public class Service {
 		}
 	}
 
+	@Transactional
+	public boolean deletePhoto(String public_id, User user) {
+		Cloudinary cloudinary = new Cloudinary(config);
+		try {
+			if (photoDao.delete(public_id, user.getUser_id()))
+					cloudinary.uploader().destroy(public_id, ObjectUtils.emptyMap());
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+	
 	@SuppressWarnings("rawtypes")
 	@Transactional
 	public boolean uploadImage(Album album, User user, MultipartFile file) {
@@ -137,7 +150,7 @@ public class Service {
 			Map uploadResult = cloudinary.uploader().upload(temp, upload_params);
 
 			String public_id = (String) uploadResult.get("public_id");
-
+			
 			Photo photo = new Photo();
 			photo.setAlbum(album);
 			photo.setCreation_date(new Date());
@@ -149,6 +162,7 @@ public class Service {
 					.imageTag(public_id).split("'")[1];
 			photo.setSlide_path(slide_url);
 			photo.setThumb_path(thumb_url);
+			photo.setPublic_id(public_id);
 			photo.setUser(user);
 			photoDao.save(photo);
 			return true;

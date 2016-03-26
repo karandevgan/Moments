@@ -1,44 +1,40 @@
-<h1 class="page-header">{{ page_header_text }}</h1>
-<div class="col-xs-4 col-sm-5 col-md-3" ng-repeat="photo in photos">
-	<div class="thumbnail">
-		<a href="#" data-target="#{{ photo.id }}" role="button"
-			data-keyboard="false" data-toggle="modal"><img
-			src="{{ photo.thumb_path }}" /> </a>
 
-	</div>
+<div class="thumbnail">
+	<a href="#" data-target="#{{ photo.id }}" role="button"
+		data-keyboard="false" data-toggle="modal"><img
+		src="{{ photo.thumb_path }}" /> </a>
+
+</div>
 
 
-	<div id="{{photo.id}}" class="modal fade" role="dialog">
-		<div class="modal-dialog modal-lg">
-
-			<!--Login Modal content-->
-			<div class="modal-content">
-				<div class="modal-body">
-					<div>
-						<nav class="navbar navbar-default">
-							<div class="container">
-								<!-- Collect the nav links, forms, and other content for toggling -->
-								<div class="collapse navbar-collapse"
-									id="bs-example-navbar-collapse-1">
-									<ul class="nav navbar-nav">
-										<li><a href="{{photo.path}}">Download</a></li>
-										<li><a href="#">Delete</a></li>
-										<li><a href="#">Share</a></li>
-									</ul>
-									<ul class="nav navbar-nav navbar-right">
-										<li><a role="button" class="close" data-dismiss="modal">&times;</a></li>
-									</ul>
-								</div>
+<div id="{{photo.id}}" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div>
+					<nav class="navbar navbar-default">
+						<div class="container">
+							<!-- Collect the nav links, forms, and other content for toggling -->
+							<div class="collapse navbar-collapse"
+								id="bs-example-navbar-collapse-1">
+								<ul class="nav navbar-nav">
+									<li><a href="{{photo.path}}" _target="blank">Download</a></li>
+									<li><a href="#" ng-click = "ctrl.deletePhoto('{{photo.public_id}}')">Delete</a></li>
+									<li><a href="#">Share</a></li>
+								</ul>
+								<ul class="nav navbar-nav navbar-right">
+									<li><a role="button" class="close" data-dismiss="modal">&times;</a></li>
+								</ul>
 							</div>
-						</nav>
-					</div>
-					<img style="max-width: 100%;" src="{{ photo.path }}" />
+						</div>
+					</nav>
 				</div>
-				<div class="modal-footer"></div>
-
+				<img style="max-width: 100%;" src="{{ photo.path }}" />
 			</div>
+			<div class="modal-footer"></div>
 
 		</div>
+
 	</div>
 </div>
 
