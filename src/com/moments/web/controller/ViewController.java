@@ -20,7 +20,7 @@ import com.moments.service.Service;
 @Controller
 public class ViewController {
 
-	private String redirectHome = "http://localhost:8080/moments";
+	private String redirectHome = "http://pslmoments.herokuapp.com/";
 
 	@Autowired
 	private Service service;

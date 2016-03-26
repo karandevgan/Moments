@@ -5,7 +5,7 @@ App.factory('UserService', [
 		function($http, $q) {
 			return {
 				createUser : function(user) {
-					return $http.post("/moments/register", user).success(
+					return $http.post("/register", user).success(
 							function(data, status) {
 								return data;
 							}).error(function(data, status) {
@@ -14,7 +14,7 @@ App.factory('UserService', [
 					});
 				},
 				getUser : function(user) {
-					return $http.post("/moments/login", user).success(
+					return $http.post("/login", user).success(
 							function(response, status) {
 								return response;
 							}).error(function(data, status) {
@@ -23,7 +23,7 @@ App.factory('UserService', [
 					});
 				},
 				checkUsername : function(username) {
-					return $http.get("/moments/validateuser", {
+					return $http.get("/validateuser", {
 						params : {
 							username : username
 						}
@@ -35,7 +35,7 @@ App.factory('UserService', [
 					});
 				},
 				checkEmail:function(email){
-					return $http.get("/moments/emailvalidation", {
+					return $http.get("/emailvalidation", {
 						params : {
 							email : email
 						}

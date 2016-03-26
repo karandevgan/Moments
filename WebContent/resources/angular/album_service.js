@@ -24,22 +24,22 @@ App.factory('AlbumService', [
 		function($http, $q, $window) {
 			return {
 				createAlbum : function(album) {
-					return $http.post("/moments/user/album/create", album)
-							.success(function(data, status) {
+					return $http.post("/user/album/create", album).success(
+							function(data, status) {
 								console.log(data);
 								console.log(status);
 								return data;
 							}).error(function(data, status) {
-								console.log(data);
-								console.log(status);
-								console.error('Error while creating album');
-								return data;
-							});
+						console.log(data);
+						console.log(status);
+						console.error('Error while creating album');
+						return data;
+					});
 				},
 				getAlbum : function(album_name, call) {
 					console.log("album name: " + album_name);
 					console.log("album call: " + call);
-					return $http.get("/moments/user/album", {
+					return $http.get("/user/album", {
 						params : {
 							album_name : album_name,
 							call : call
@@ -52,7 +52,7 @@ App.factory('AlbumService', [
 					});
 				},
 				getSharedAlbum : function(album_id, album_name, call) {
-					return $http.get("/moments/user/sharedalbum", {
+					return $http.get("/user/sharedalbum", {
 						params : {
 							album_id : album_id,
 							album_name : album_name,
@@ -66,7 +66,7 @@ App.factory('AlbumService', [
 					});
 				},
 				getAlbums : function() {
-					return $http.get("/moments/user/albums").success(
+					return $http.get("/user/albums").success(
 							function(responseData, status) {
 								return responseData;
 							}).error(function(data, status) {
@@ -76,7 +76,7 @@ App.factory('AlbumService', [
 				},
 
 				uploadFile : function(album_name, formData) {
-					var url = '/moments/user/upload?album_name=' + album_name;
+					var url = '/user/upload?album_name=' + album_name;
 					return $http.post(url, formData, {
 						transformRequest : angular.identity,
 						headers : {
@@ -84,16 +84,15 @@ App.factory('AlbumService', [
 						}
 					}).success(function(data, status) {
 						console.log(status);
-						return status;
+						return data;
 					}).error(function(data, status) {
 						console.log(status);
-						return status;
+						return data;
 					});
 				},
 
 				deleteAlbum : function(album_name) {
-					var url = '/moments/user/album/delete?album_name='
-							+ album_name;
+					var url = '/user/album/delete?album_name=' + album_name;
 					return $http.get(url).success(
 							function(responseData, status) {
 								return responseData;
@@ -104,7 +103,7 @@ App.factory('AlbumService', [
 				},
 
 				downloadAlbum : function(album_name) {
-					var url = '/moments/user/album/download/' + album_name;
+					var url = '/user/album/download/' + album_name;
 					console.log(url);
 					return $http.get(url).success(
 							function(responseData, status) {
@@ -116,20 +115,19 @@ App.factory('AlbumService', [
 				},
 
 				createAlbumLink : function(album_name) {
-					var url = '/moments/user/album/createlink/' + album_name;
+					var url = '/user/album/createlink/' + album_name;
 					console.log(url);
 					return $http.get(url).success(
 							function(responseData, status) {
 								return responseData;
 							}).error(function(data, status) {
-						console.error("Error creating link");
-						return data;
-					});
+								console.error("Error creating link");
+								return data;
+							});
 				},
 
 				deletePhoto : function(public_id) {
-					var url = '/moments/user/photo/delete?public_id='
-							+ public_id;
+					var url = '/user/photo/delete?public_id=' + public_id;
 					return $http.get(url).success(
 							function(responseData, status) {
 								return responseData;
@@ -138,10 +136,9 @@ App.factory('AlbumService', [
 						return data;
 					});
 				},
-				
+
 				downloadPhoto : function(public_id) {
-					var url = '/moments/user/photo/download?public_id='
-							+ public_id;
+					var url = '/user/photo/download?public_id=' + public_id;
 					$window.open(url, "_blank");
 				}
 			}

@@ -14,7 +14,7 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 			this.createAlbum = function(album) {
 				console.log(album);
 				AlbumService.createAlbum(album).success(function(data) {
-					$window.location.href = '/moments/';
+					$window.location.href = '/';
 				}).error(function(errResponse) {
 					$scope.showDiv = true;
 					$scope.errorMsgs = errResponse;
@@ -33,7 +33,7 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				}).error(function(data) {
 					$scope.page_header_text = "Error while retrieving albums.";
 				}).finally(function() {
-					$scope.albumData = "/moments/pages/albumData.html";
+					$scope.albumData = "/pages/albumData.html";
 					console.log($scope.albumData);
 				});
 			};
@@ -57,6 +57,7 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 			};
 			
 			this.createAlbumLink = function(album_name) {
+				$scope.shareAlbumLink = "";
 				AlbumService.createAlbumLink(album_name).success(function(response) {
 					console.log(response);
 					$scope.shareAlbumLink = response;
@@ -106,7 +107,7 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 				}).error(function(data) {
 					console.error("Error");
 				}).finally(function() {
-					$scope.albumPhotos = "/moments/pages/albumPhotos.html";
+					$scope.albumPhotos = "/pages/albumPhotos.html";
 				});
 			};
 			
@@ -129,7 +130,7 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 				}).error(function(data) {
 					$scope.page_header_text = "Error retreiving album";
 				}).finally(function() {
-					$scope.albumPhotos = "/moments/pages/albumPhotoShared.html";
+					$scope.albumPhotos = "/pages/albumPhotoShared.html";
 				});
 			};
 			
@@ -211,7 +212,7 @@ function($scope, $window, AlbumService) {
 				$scope.show_upload_form = true;
 			});
 		} else{
-			$window.location.href= "/moments/user/album/" + $scope.album_name;
+			$window.location.href= "/user/album/" + $scope.album_name;
 		}
 	}
 }

@@ -164,7 +164,7 @@ public class UserController {
 	@RequestMapping(value = "/upload", params = { "album_name" }, method = RequestMethod.POST)
 	public ResponseEntity<Void> uploadFile(MultipartHttpServletRequest request, HttpServletRequest req,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
-
+		
 		User user = null;
 		Object sessionUser = session.getAttribute("username");
 		ResponseEntity<Void> returnEntity = null;
@@ -177,7 +177,7 @@ public class UserController {
 			Iterator<String> itr = request.getFileNames();
 
 			MultipartFile file = request.getFile(itr.next());
-
+			
 			if (service.uploadImage(album, user, file)) {
 				returnEntity = new ResponseEntity<Void>(HttpStatus.CREATED);
 			} else {
@@ -232,7 +232,7 @@ public class UserController {
 					oos.close();
 					String object_link = Base64.getUrlEncoder().encodeToString(baos.toByteArray());
 					System.out.println(object_link);
-					String link = "http://localhost:8080/moments/sharealbum/" + object_link;
+					String link = "https://pslmoments.herokuapp.com/sharealbum/" + object_link;
 					returnEntity = new ResponseEntity<String>(link, HttpStatus.OK);
 				} catch (Exception e) {
 					e.printStackTrace();

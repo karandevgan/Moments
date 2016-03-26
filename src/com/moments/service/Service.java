@@ -96,7 +96,7 @@ public class Service {
 		album.setUser(user);
 		album.setCreation_date(new Date());
 		album.setLast_modified(new Date());
-		album.setCoverphoto("/moments/resources/static/corousel1.jpg");
+		album.setCoverphoto("/resources/static/corousel1.jpg");
 		album.setUser(user);
 		boolean isAlbumSaved = albumDao.save(album);
 		user.setNumber_of_albums(user.getNumber_of_albums() + 1);
@@ -136,10 +136,10 @@ public class Service {
 	@SuppressWarnings("rawtypes")
 	@Transactional
 	public boolean uploadImage(Album album, User user, MultipartFile file) {
+		System.out.println("Uploading File.....");
 		File temp = null;
 		try {
-			String temp_path = "C:/Project/" + file.getOriginalFilename();
-			temp = new File(temp_path);
+			temp = new File(file.getOriginalFilename());
 			file.transferTo(temp);
 
 			String uploadFolder = user.getUsername() + "/" + album.getAlbum_name();
@@ -150,16 +150,17 @@ public class Service {
 			Map uploadResult = cloudinary.uploader().upload(temp, upload_params);
 
 			String public_id = (String) uploadResult.get("public_id");
-			
-			Photo photo = new Photo();
-			photo.setAlbum(album);
-			photo.setCreation_date(new Date());
-			photo.setPath(uploadResult.get("url").toString());
 			String thumb_url = cloudinary.url().transformation(new Transformation().height(200).crop("scale"))
 					.imageTag(public_id).split("'")[1];
 			
 			String slide_url = cloudinary.url().transformation(new Transformation().width(800).crop("scale"))
 					.imageTag(public_id).split("'")[1];
+			
+			Photo photo = new Photo();
+			photo.setAlbum(album);
+			photo.setCreation_date(new Date());
+			photo.setPath(uploadResult.get("url").toString());
+			
 			photo.setSlide_path(slide_url);
 			photo.setThumb_path(thumb_url);
 			photo.setPublic_id(public_id);

@@ -1,12 +1,12 @@
 <h1 class="page-header">{{ page_header_text }}</h1>
-<div class="col-xs-5 col-sm-4 col-md-3" ng-repeat="album in albums">
+<div class="col-xs-6 col-sm-5 col-md-4" ng-repeat="album in albums">
 	<div class="thumbnail">
-		<a href="/moments/user/album/{{ album.album_name }}"> <img
+		<a href="/user/album/{{ album.album_name }}"> <img
 			src="{{ album.coverphoto }}" />
 		</a>
 		<div class="caption">
 			<h4 class="make-inline">
-				<a href="/moments/user/album/{{ album.album_name }}">{{
+				<a href="/user/album/{{ album.album_name }}">{{
 					album.album_name }}</a>&nbsp;&nbsp;
 			</h4>
 			<div class="btn-group make-inline">

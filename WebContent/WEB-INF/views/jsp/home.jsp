@@ -7,14 +7,14 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>Moments | Home</title>
 <!-- Bootstrap -->
-<link href="/moments/resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="/moments/resources/css/corousel.css" rel="stylesheet">
-<link href="/moments/resources/css/signin.css" rel="stylesheet">
-<link href="/moments/resources/css/all.css" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/css/corousel.css" rel="stylesheet">
+<link href="/resources/css/signin.css" rel="stylesheet">
+<link href="/resources/css/all.css" rel="stylesheet">
 <script
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="/moments/resources/angular/user_service.js"></script>
-<script src="/moments/resources/angular/user_controller.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="/resources/angular/user_service.js"></script>
+<script src="/resources/angular/user_controller.js"></script>
 </head>
 <body ng-app="myApp">
 	<div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -27,7 +27,7 @@
 		<div class="carousel-inner" role="listbox">
 			<div class="item active">
 				<img class="first-slide"
-					src="/moments/resources/static/corousel1.jpg" alt="First slide">
+					src="/resources/static/corousel1.jpg" alt="First slide">
 				<div class="container">
 					<div class="carousel-caption">
 						<h1>Moments - Personal photo storage</h1>
@@ -46,7 +46,7 @@
 			</div>
 			<div class="item">
 				<img class="second-slide"
-					src="/moments/resources/static/corousel2.jpg" alt="Second slide">
+					src="/resources/static/corousel2.jpg" alt="Second slide">
 				<div class="container">
 					<div class="carousel-caption">
 						<h1>Share the moments</h1>
@@ -65,7 +65,7 @@
 			</div>
 			<div class="item">
 				<img class="third-slide"
-					src="/moments/resources/static/corousel3.jpg" alt="Third slide">
+					src="/resources/static/corousel3.jpg" alt="Third slide">
 				<div class="container">
 					<div class="carousel-caption">
 						<h1>Refresh your memories</h1>
@@ -140,7 +140,7 @@
 					<h4 class="modal-title">Please sign in</h4>
 				</div>
 				<form name="loginForm" ng-controller="LoginUserController as ctrl"
-					ng-submit="loginForm.$valid && ctrl.submit()">
+					ng-submit="loginForm.$valid && ctrl.submit()" ng-cloak>
 					<div class="modal-body">
 						<div class="alert alert-warning" role="alert" ng-show="showDiv">
 							<ul>
@@ -188,7 +188,7 @@
 				</div>
 				<form class="form-signin" ng-app="myApp" name="signupForm"
 					ng-controller="SignupUserController as ctrl"
-					ng-submit="ctrl.submit() " novalidate>
+					ng-submit="ctrl.submit() " novalidate ng-cloak>
 					<div class="modal-body">
 						<div class="alert alert-warning" role="alert" ng-show="showDiv">
 							<ul>
@@ -284,6 +284,6 @@
 	</div>
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<script src="/moments/resources/js/bootstrap.js"></script>
+	<script src="/resources/js/bootstrap.js"></script>
 </body>
 </html>

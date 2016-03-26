@@ -10,18 +10,18 @@
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="/moments/resources/angular/ng-infinite-scroll.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="/resources/angular/ng-infinite-scroll.min.js"></script>
 
-<script src="/moments/resources/angular/album_service.js"></script>
-<script src="/moments/resources/angular/album_controller.js"></script>
+<script src="/resources/angular/album_service.js"></script>
+<script src="/resources/angular/album_controller.js"></script>
 
 <!-- Bootstrap -->
-<link href="/moments/resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="/moments/resources/css/nav.css" rel="stylesheet">
-<link href="/moments/resources/css/sidebar.css" rel="stylesheet">
-<link href="/moments/resources/css/signin.css" rel="stylesheet">
-<link href="/moments/resources/css/all.css" rel="stylesheet">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/css/nav.css" rel="stylesheet">
+<link href="/resources/css/sidebar.css" rel="stylesheet">
+<link href="/resources/css/signin.css" rel="stylesheet">
+<link href="/resources/css/all.css" rel="stylesheet">
 </head>
 
 <body ng-app="myApp">
@@ -37,25 +37,25 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="">Moments</a>
+					<a class="navbar-brand" href="/">Moments</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li><a href="/moments">Home </a></li>
+						<li><a href="/">Home </a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> Album <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/moments">All Albums</a></li>
+								<li><a href="/">All Albums</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a data-target="#createAlbumModal" role="button"
 									data-backdrop="static" data-keyboard="false"
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
-						<li><a href="/moments/user/allphotos">All Photos</a></li>
+						<li><a href="/user/allphotos">All Photos</a></li>
 						<li class="active"><a href="#">Upload Photos<span
 								class="sr-only">(current)</span></a>
 					</ul>
@@ -65,9 +65,9 @@
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> ${ username } <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/moments/user/profile">Profile</a></li>
+								<li><a href="/user/profile">Profile</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="/moments/logout">Log Out</a></li>
+								<li><a href="/logout">Log Out</a></li>
 							</ul></li>
 					</ul>
 				</div>
@@ -94,8 +94,8 @@
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 				<nav>
 					<ul class="breadcrumb">
-						<li><a href="/moments/">Home</a></li>
-						<li><a href="/moments/user/album/${album_name}">${album_name}</a></li>
+						<li><a href="/">Home</a></li>
+						<li><a href="/user/album/${album_name}">${album_name}</a></li>
 						<li class="active">Upload</li>
 					</ul>
 				</nav>
@@ -131,7 +131,7 @@
 	</div>
 
 
-	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
-	<script src="/moments/resources/js/bootstrap.js"></script>
+	<ng-include src="'/pages/createAlbumModal.html'"></ng-include>
+	<script src="/resources/js/bootstrap.js"></script>
 </body>
 </html>

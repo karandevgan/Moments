@@ -67,10 +67,10 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public DriverManagerDataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
-		ds.setDriverClassName("com.mysql.jdbc.Driver");
-		ds.setUrl("jdbc:mysql://localhost:3306/momentsdb");
-		ds.setUsername("root");
-		ds.setPassword("root");
+		ds.setDriverClassName("org.postgresql.Driver");
+		ds.setUrl(System.getenv().get("JDBC_DATABASE_URL")+"?sslmode=disable");
+		ds.setUsername(System.getenv().get("DATABASE_USER"));
+		ds.setPassword(System.getenv().get("DATABASE_PASSWORD"));
 		return ds;
 	}
 	
@@ -81,8 +81,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		sf.setDataSource(dataSource());
 		Properties hibernateProperties = new Properties();
 		hibernateProperties.setProperty("hibernate.dialect",
-				"org.hibernate.dialect.MySQLDialect");
-		hibernateProperties.setProperty("hibernate.show_sql", "true");
+				"org.hibernate.dialect.PostgreSQLDialect");
 		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 		sf.setHibernateProperties(hibernateProperties);
 		sf.setAnnotatedClasses(User.class, Album.class, Photo.class, Token.class);
