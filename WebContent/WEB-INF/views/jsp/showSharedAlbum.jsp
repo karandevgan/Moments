@@ -56,7 +56,7 @@
 			infinite-scroll="ctrl.getSharedAlbum(${album_id}, '${album_name}')"
 			infinite-scroll-distance="0" infinite-scroll-disabled="busy" ng-cloak>
 			<h1 class="page-header">{{ page_header_text }}</h1>
-			<div class="col-xs-4 col-sm-5 col-md-3" ng-repeat="photo in photos">
+			<div class="col-xs-5 col-sm-5 col-md-4" ng-repeat="photo in photos">
 				<ng-include src="albumPhotos"> <img
 					src="/resources/static/loader.gif" /></ng-include>
 			</div>
