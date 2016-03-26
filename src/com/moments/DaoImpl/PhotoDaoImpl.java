@@ -75,12 +75,12 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 		return criteria.list();
 	}
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public int getTotalPhotos(User user) {
+	public List<Photo> getTotalPhotos(User user) {
 		String hql = "from Photo where user_id=?";
 		List photos = getHibernateTemplate().find(hql, user.getUser_id());
-		return photos.size();
+		return (List<Photo>)photos;
 	}
 
 	@Override

@@ -263,4 +263,25 @@ public class UserController {
 		}
 		return returnEntity;
 	}
+	
+	@RequestMapping(value = "/getallphotos")
+	public ResponseEntity<List<Photo>> allPhotos(HttpServletRequest request,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<List<Photo>> returnEntity = null;
+		user = service.getUser(token_value, sessionUser);
+		
+		if (user != null) {
+			List<Photo> photos = service.getTotalPhotos(user);
+			if (photos.size() > 0)
+				returnEntity = new ResponseEntity<List<Photo>>(photos,HttpStatus.OK);
+			else
+				returnEntity = new ResponseEntity<List<Photo>>(HttpStatus.NO_CONTENT);
+
+		} else {
+			returnEntity = new ResponseEntity<List<Photo>>(HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
+	}
 }

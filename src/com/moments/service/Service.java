@@ -71,7 +71,7 @@ public class Service {
 	}
 
 	@Transactional
-	public int getTotalPhotos(User user) {
+	public List<Photo> getTotalPhotos(User user) {
 		return photoDao.getTotalPhotos(user);
 	}
 
