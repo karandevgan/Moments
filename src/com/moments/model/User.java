@@ -58,7 +58,7 @@ public class User implements Serializable {
 
 	@Column(nullable=false)
 	private Integer number_of_albums;
-
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
 	@JsonManagedReference

@@ -134,10 +134,16 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 			};
 			
 			this.deletePhoto = function(public_id) {
+				console.log(public_id);
 				AlbumService.deletePhoto(public_id).success(function(response){
 					$window.location.href='';
 				});
-			}
+			};
+			
+			this.downloadPhoto = function(public_id) {
+				console.log(public_id);
+				AlbumService.downloadPhoto(public_id);
+			};
 		} ]);
 
 App.controller('UploadController', [ '$scope', '$window','AlbumService',

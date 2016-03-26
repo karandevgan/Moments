@@ -248,4 +248,8 @@ public class Service {
 		}
 		return user;
 	}
+
+	public String getImagePath(String public_id) {
+		return photoDao.getImagePath(public_id);
+	}
 }

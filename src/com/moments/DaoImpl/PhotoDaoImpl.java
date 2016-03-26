@@ -93,4 +93,15 @@ public class PhotoDaoImpl extends CustomHibernateDaoSupport implements PhotoDao 
 			return false;
 	}
 
+	@SuppressWarnings("rawtypes")
+	@Override
+	public String getImagePath(String public_id) {
+		String hql = "from Photo where public_id=?";
+		List photo = getHibernateTemplate().find(hql, public_id);
+		if (photo.size() > 0) {
+			return ((Photo)photo.get(0)).getPath();
+		}
+		return null;
+	}
+
 }

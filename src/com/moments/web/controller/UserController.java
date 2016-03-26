@@ -1,19 +1,25 @@
 package com.moments.web.controller;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -263,7 +269,7 @@ public class UserController {
 		}
 		return returnEntity;
 	}
-	
+
 	@RequestMapping(value = "/getallphotos")
 	public ResponseEntity<List<Photo>> allPhotos(HttpServletRequest request,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
@@ -271,11 +277,11 @@ public class UserController {
 		Object sessionUser = session.getAttribute("username");
 		ResponseEntity<List<Photo>> returnEntity = null;
 		user = service.getUser(token_value, sessionUser);
-		
+
 		if (user != null) {
 			List<Photo> photos = service.getTotalPhotos(user);
 			if (photos.size() > 0)
-				returnEntity = new ResponseEntity<List<Photo>>(photos,HttpStatus.OK);
+				returnEntity = new ResponseEntity<List<Photo>>(photos, HttpStatus.OK);
 			else
 				returnEntity = new ResponseEntity<List<Photo>>(HttpStatus.NO_CONTENT);
 
@@ -283,5 +289,26 @@ public class UserController {
 			returnEntity = new ResponseEntity<List<Photo>>(HttpStatus.UNAUTHORIZED);
 		}
 		return returnEntity;
+	}
+
+	@RequestMapping(value = "/photo/download", params = { "public_id" })
+	public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		String public_id = request.getParameter("public_id");
+		String image_path = service.getImagePath(public_id);
+		String image_name = image_path.substring(image_path.lastIndexOf('/')+1, image_path.length());
+		System.out.println(image_name);
+		if (image_path != null) {
+			URL url = new URL(image_path);
+			System.out.println(image_path);
+			String mimeType = URLConnection.guessContentTypeFromName(image_name);
+			if (mimeType == null)
+				mimeType = "application/octet-stream";
+			System.out.println(mimeType);
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition",
+					String.format("attachment; filename=\"" + image_name + "\""));
+			InputStream inputStream = url.openStream();
+			FileCopyUtils.copy(inputStream, response.getOutputStream());
+		}
 	}
 }

@@ -25,4 +25,6 @@ public interface PhotoDao {
 	List<Photo> getPhotos(Album album, int call);
 
 	public boolean delete(String public_id, int user_id);
+
+	public String getImagePath(String public_id);
 }

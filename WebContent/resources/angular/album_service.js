@@ -20,7 +20,8 @@ App.directive('ngFiles', [ '$parse', function($parse) {
 App.factory('AlbumService', [
 		'$http',
 		'$q',
-		function($http, $q) {
+		'$window',
+		function($http, $q, $window) {
 			return {
 				createAlbum : function(album) {
 					return $http.post("/moments/user/album/create", album)
@@ -137,5 +138,11 @@ App.factory('AlbumService', [
 						return data;
 					});
 				},
+				
+				downloadPhoto : function(public_id) {
+					var url = '/moments/user/photo/download?public_id='
+							+ public_id;
+					$window.open(url, "_blank");
+				}
 			}
 		} ]);
