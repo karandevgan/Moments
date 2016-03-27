@@ -8,7 +8,7 @@
 <title>Moments | Profile</title>
 
 <script
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
 <script src="/moments/resources/angular/user_service.js"></script>
 <script src="/moments/resources/angular/user_controller.js"></script>
@@ -34,25 +34,25 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="">Moments</a>
+					<a class="navbar-brand" href="/">Moments</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li><a href="/moments">Home </a></li>
+						<li><a href="/">Home </a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> Album <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/moments">All Albums</a></li>
+								<li><a href="/">All Albums</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a data-target="#createAlbumModal" role="button"
 									data-backdrop="static" data-keyboard="false"
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
-						<li><a href="/moments/user/allphotos">All
+						<li><a href="/user/allphotos">All
 								Photos <span class="sr-only"></span>
 						</a></li>
 
@@ -63,9 +63,9 @@
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> ${ username } <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/moments/user/profile">Profile</a></li>
+								<li><a href="/user/profile">Profile</a></li>
 								<li role="separator" class="divider"></li>
-								<li><a href="/moments/logout">Log Out</a></li>
+								<li><a href="/logout">Log Out</a></li>
 							</ul></li>
 					</ul>
 				</div>
@@ -81,12 +81,10 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
 					<li><a href="">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
-					<li><a href="">My Shared Albums</a></li>
+                	<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

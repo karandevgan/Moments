@@ -1,5 +1,8 @@
 package com.moments.Dao;
 
+import java.util.Set;
+
+import com.moments.model.Album;
 import com.moments.model.User;
 
 public interface UserDao {
@@ -18,6 +21,8 @@ public interface UserDao {
 	public User getUser(String username);
 
 	User getUser(int user_id);
+
+	Set<Album> getSharedAlbums(User user);
 }
 
 

@@ -22,6 +22,7 @@ import javax.persistence.Table;
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonManagedReference;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
 @Table(name = "tblAlbum")
@@ -55,8 +56,9 @@ public class Album implements Serializable {
 	@Column(nullable=true)
 	private String coverphoto;
 	
+
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="user_id", nullable=false)
 	@JsonBackReference
 	private User user;
@@ -107,10 +109,12 @@ public class Album implements Serializable {
 		this.last_modified = last_modified;
 	}
 
+	@JsonProperty
 	public User getUser() {
 		return user;
 	}
 
+	@JsonIgnore
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -131,10 +135,12 @@ public class Album implements Serializable {
 		this.photos = photos;
 	}
 
+	
 	public Set<User> getShared_users() {
 		return shared_users;
 	}
 
+	
 	public void setShared_users(Set<User> shared_users) {
 		this.shared_users = shared_users;
 	}

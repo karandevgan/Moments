@@ -7,17 +7,17 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				creation_date : '',
 				description : '',
 				last_modified : '',
+				user : {}
 			};
 			
+			$scope.albums = [];
 			this.username = '';
 			this.album_name = '';
 			
-			$scope.albums = [];
-
 			this.createAlbum = function(album) {
 				console.log(album);
 				AlbumService.createAlbum(album).success(function(data) {
-					$window.location.href = '/moments/';
+					$window.location.href = '/moments';
 				}).error(function(errResponse) {
 					$scope.showDiv = true;
 					$scope.errorMsgs = errResponse;
@@ -41,6 +41,22 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				});
 			};
 			
+			this.getSharedAlbums = function() {
+				AlbumService.getSharedAlbums().success(function(response) {
+					$scope.albums = response;
+					if($scope.albums.length > 0) {
+						$scope.page_header_text = "Albums shared with you";
+					}
+					else {
+						$scope.page_header_text = "You have no albums shared with you.";
+					}
+				}).error(function(data) {
+					$scope.page_header_text = "Error while retrieving albums.";
+				}).finally(function() {
+					console.log($scope.albumData);
+				});
+			};
+			
 			this.deleteAlbum = function(album_name) {
 				$scope.showUpdateDiv = true;
 				$scope.update = "Album will be deleted shortly";
@@ -60,6 +76,7 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 			};
 			
 			this.createAlbumLink = function(album_name) {
+				$scope.shareAlbumLink = "";
 				AlbumService.createAlbumLink(album_name).success(function(response) {
 					console.log(response);
 					$scope.shareAlbumLink = response;
@@ -90,13 +107,6 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				}
 			};
 			
-			this.submit = function() {
-				if ($scope.createAlbumForm.$valid)
-					this.createAlbum(this.album);
-
-				console.log("Submit called");
-			};
-			
 			this.shareAlbum = function(album_name, username) {
 				console.log(album_name);
 				console.log(username);
@@ -117,12 +127,17 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				}
 				console.log("Submit Called");
 			};
+			
+			this.submit = function() {
+				if ($scope.createAlbumForm.$valid)
+					this.createAlbum(this.album);
+
+				console.log("Submit called");
+			};
 
 			this.reset = function() {
 				$window.location.href = '';
 			};
-
-			this.getAlbums();
 		} ]);
 
 App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
@@ -147,6 +162,30 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 					} else {
 						if ($scope.call == 0)
 							$scope.page_header_text = "No photos in this album";
+						$scope.notComplete = false;
+					}
+				}).error(function(data) {
+					console.error("Error");
+				}).finally(function() {
+					$scope.albumPhotos = "/moments/pages/albumPhotos.html";
+				});
+			};
+			this.getAllPhotos = function() {
+				if ($scope.busy) return;
+			    $scope.busy = true;
+				AlbumService.getAllPhotos($scope.call).success(function(response) {
+					if (response.length > 0){
+						for (var i=0; i < response.length; i++) {
+							$scope.photos.push(response[i]);
+						}
+						$scope.call += response.length;
+						console.log($scope.busy);
+						$scope.busy = false;
+						console.log($scope.busy);
+						$scope.page_header_text = "Your all Photos";
+					} else {
+						if ($scope.call == 0)
+							$scope.page_header_text = "You have no photos";
 						$scope.notComplete = false;
 					}
 				}).error(function(data) {
@@ -210,18 +249,16 @@ function($scope, $window, AlbumService) {
 			$scope.showErrorDiv = true;
 			this.isInvalidFiles = true;
     	}
-    	else {
-	    	for (var i=0; i < $scope.total_files; i++) {
-	    		var type = files[i].type;
-	    		console.log(type);
-	    		if (valid_types.indexOf(type) == -1){
-	    			$scope.error = "Only jpeg and png files are allowed.";
-	    			$scope.showErrorDiv = true;
-	    			this.isInvalidFiles = true;
-	    			console.log("Invalid file types");
-	    			break;
-	    		}
-	    	}
+    	for (var i=0; i < $scope.total_files; i++) {
+    		var type = files[i].type;
+    		console.log(type);
+    		if (valid_types.indexOf(type) == -1){
+    			$scope.error = "Only jpeg and png files are allowed.";
+    			$scope.showErrorDiv = true;
+    			this.isInvalidFiles = true;
+    			console.log("Invalid file types");
+    			break;
+    		}
     	}
     	if (this.isInvalidFiles) {
     		$scope.uploadPhotoForm.$valid = false;
@@ -232,11 +269,6 @@ function($scope, $window, AlbumService) {
     };
 		
 	this.uploadFile = function() {
-		if ($scope.total_files == 0) {
-    		$scope.error = "Please select atleast one file";
-			$scope.showErrorDiv = true;
-			$scope.uploadPhotoForm.$valid = true;
-    	}
 		console.log($scope.uploadPhotoForm.$valid);
 		if ($scope.uploadPhotoForm.$valid) {
 			$scope.show_upload_count = true;

@@ -24,17 +24,17 @@ App.factory('AlbumService', [
 		function($http, $q, $window) {
 			return {
 				createAlbum : function(album) {
-					return $http.post("/moments/user/album/create", album)
-							.success(function(data, status) {
+					return $http.post("/moments/user/album/create", album).success(
+							function(data, status) {
 								console.log(data);
 								console.log(status);
 								return data;
 							}).error(function(data, status) {
-								console.log(data);
-								console.log(status);
-								console.error('Error while creating album');
-								return data;
-							});
+						console.log(data);
+						console.log(status);
+						console.error('Error while creating album');
+						return data;
+					});
 				},
 				getAlbum : function(album_name, call) {
 					console.log("album name: " + album_name);
@@ -51,6 +51,19 @@ App.factory('AlbumService', [
 						return data;
 					});
 				},
+				getAllPhotos : function(call) {
+					console.log("album call: " + call);
+					return $http.get("/moments/user/getallphotos", {
+						params : {
+							call : call
+						}
+					}).success(function(response) {
+						return response;
+					}).error(function(data, status) {
+						console.error('Error while getting allphotos');
+						return data;
+					});
+				},
 				getSharedAlbum : function(album_id, album_name, call) {
 					return $http.get("/moments/user/sharedalbum", {
 						params : {
@@ -62,6 +75,16 @@ App.factory('AlbumService', [
 						return response;
 					}).error(function(data, status) {
 						console.error('Error while getting album');
+						return data;
+					});
+				},
+				
+				getSharedAlbums : function() {
+					return $http.get("/moments/user/sharedalbums").success(
+							function(responseData, status) {
+								return responseData;
+							}).error(function(data, status) {
+						console.error("Error while getting shared albums");
 						return data;
 					});
 				},
@@ -84,16 +107,15 @@ App.factory('AlbumService', [
 						}
 					}).success(function(data, status) {
 						console.log(status);
-						return status;
+						return data;
 					}).error(function(data, status) {
 						console.log(status);
-						return status;
+						return data;
 					});
 				},
 
 				deleteAlbum : function(album_name) {
-					var url = '/moments/user/album/delete?album_name='
-							+ album_name;
+					var url = '/moments/user/album/delete?album_name=' + album_name;
 					return $http.get(url).success(
 							function(responseData, status) {
 								return responseData;
@@ -128,8 +150,7 @@ App.factory('AlbumService', [
 				},
 
 				deletePhoto : function(public_id) {
-					var url = '/moments/user/photo/delete?public_id='
-							+ public_id;
+					var url = '/moments/user/photo/delete?public_id=' + public_id;
 					return $http.get(url).success(
 							function(responseData, status) {
 								return responseData;
@@ -138,13 +159,12 @@ App.factory('AlbumService', [
 						return data;
 					});
 				},
-				
+
 				downloadPhoto : function(public_id) {
-					var url = '/moments/user/photo/download?public_id='
-							+ public_id;
+					var url = '/moments/user/photo/download?public_id=' + public_id;
 					$window.open(url, "_blank");
 				},
-				
+
 				checkUsername : function(username) {
 					return $http.get("/moments/userexists", {
 						params : {
@@ -157,16 +177,16 @@ App.factory('AlbumService', [
 						return error;
 					});
 				},
-				
+
 				shareAlbum : function(album_name, username) {
 					return $http.get("/moments/user/album/sharewithuser", {
-						params: {
+						params : {
 							album_name : album_name,
 							share_user : username
 						}
-					}).success(function(response, status){
+					}).success(function(response, status) {
 						return response;
-					}).error(function(error, status){
+					}).error(function(error, status) {
 						return error;
 					})
 				}

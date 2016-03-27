@@ -2,11 +2,16 @@ package com.moments.DaoImpl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+
+import org.springframework.transaction.annotation.Transactional;
 
 import com.moments.Dao.UserDao;
 import com.moments.hibernateDaoSupport.CustomHibernateDaoSupport;
+import com.moments.model.Album;
 import com.moments.model.User;
 
+@Transactional
 public class UserDaoImpl extends CustomHibernateDaoSupport implements UserDao {
 
 	@Override
@@ -101,6 +106,13 @@ public class UserDaoImpl extends CustomHibernateDaoSupport implements UserDao {
 				return (User) users.get(0);
 		}
 		return null;
+	}
+	
+	@Override
+	public Set<Album> getSharedAlbums(User user) {
+		User userObj = getUser(user.getUsername());
+		getHibernateTemplate().initialize(userObj.getShared_album());
+		return userObj.getShared_album();
 	}
 
 }

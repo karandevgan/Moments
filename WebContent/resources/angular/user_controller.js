@@ -25,7 +25,7 @@ App
 										.createUser(user)
 										.success(
 												function() {
-													$window.location.href = '/moments/';
+													$window.location.href = '/moments';
 													$window
 															.alert("Registration Successful. Kindly login using Sign In button.")
 												}).error(function(errResponse) {
@@ -91,7 +91,7 @@ App
 							};
 
 							this.reset = function() {
-								$window.location.href = '/moments/'
+								$window.location.href = '/moments'
 							};
 						} ]);
 
@@ -107,7 +107,7 @@ App.controller('LoginUserController', [ '$scope', '$window', 'UserService',
 				UserService.getUser(user).success(function(response) {
 					sessionStorage.setItem("auth-token", response);
 					console.log(sessionStorage.getItem("auth-token"));
-					$window.location.href = '/moments/';
+					$window.location.href = '/moments';
 				}).error(function(data) {
 					$scope.showDiv = true;
 					$scope.errorMsgs = data;
@@ -120,6 +120,6 @@ App.controller('LoginUserController', [ '$scope', '$window', 'UserService',
 			};
 
 			this.reset = function() {
-				$window.location.href = '/moments/'
+				$window.location.href = '/moments'
 			}
 		} ]);

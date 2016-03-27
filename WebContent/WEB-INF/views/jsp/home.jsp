@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -12,7 +12,7 @@
 <link href="/moments/resources/css/signin.css" rel="stylesheet">
 <link href="/moments/resources/css/all.css" rel="stylesheet">
 <script
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script src="/moments/resources/angular/user_service.js"></script>
 <script src="/moments/resources/angular/user_controller.js"></script>
 </head>
@@ -140,7 +140,7 @@
 					<h4 class="modal-title">Please sign in</h4>
 				</div>
 				<form name="loginForm" ng-controller="LoginUserController as ctrl"
-					ng-submit="loginForm.$valid && ctrl.submit()">
+					ng-submit="loginForm.$valid && ctrl.submit()" ng-cloak>
 					<div class="modal-body">
 						<div class="alert alert-warning" role="alert" ng-show="showDiv">
 							<ul>
@@ -188,7 +188,7 @@
 				</div>
 				<form class="form-signin" ng-app="myApp" name="signupForm"
 					ng-controller="SignupUserController as ctrl"
-					ng-submit="ctrl.submit() " novalidate>
+					ng-submit="ctrl.submit() " novalidate ng-cloak>
 					<div class="modal-body">
 						<div class="alert alert-warning" role="alert" ng-show="showDiv">
 							<ul>

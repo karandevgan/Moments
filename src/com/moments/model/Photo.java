@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonProperty;
 
 @Entity
 @Table(name = "tblPhoto")
@@ -45,13 +46,13 @@ public class Photo implements Serializable {
 	private Date creation_date;
 	
 	@JsonIgnore
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name="user_id", nullable=false)
 	@JsonBackReference
 	private User user;
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="album_id", nullable=false)
 	@JsonBackReference
 	private Album album;
@@ -113,18 +114,22 @@ public class Photo implements Serializable {
 		this.creation_date = creation_date;
 	}
 
+	@JsonProperty
 	public User getUser() {
 		return user;
 	}
 
+	@JsonIgnore
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	@JsonProperty
 	public Album getAlbum() {
 		return album;
 	}
 
+	@JsonIgnore
 	public void setAlbum(Album album) {
 		this.album = album;
 	}

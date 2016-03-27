@@ -20,7 +20,7 @@ import com.moments.service.Service;
 @Controller
 public class ViewController {
 
-	private String redirectHome = "http://localhost:8080/moments";
+	private String redirectHome = "http://pslmoments.herokuapp.com/";
 
 	@Autowired
 	private Service service;
@@ -126,6 +126,40 @@ public class ViewController {
 			} catch (Exception e) {
 				mv.setViewName("404");
 			}
+		} else {
+			mv.setViewName("400");
+		}
+		return mv;
+	}
+	
+	@RequestMapping(value = { "/sharedalbums" }, method = RequestMethod.GET)
+	public ModelAndView getMySharedAlbums(HttpServletRequest req) {
+		ModelAndView model = new ModelAndView();
+		if (session.getAttribute("username") != null) {
+			model.addObject("username", session.getAttribute("username"));
+			model.setViewName("sharedalbums");
+		} else {
+			if (req.getParameter("newuser") != null)
+				model.addObject("newuser", true);
+			else
+				model.addObject("newuser", false);
+			model.setViewName("home");
+		}
+		return model;
+	}
+
+	@RequestMapping(value = "/showsharedalbum", params = { "album_name", "username" })
+	public ModelAndView showSharedAlbum(HttpServletRequest req) {
+
+		ModelAndView mv = new ModelAndView();
+		System.out.println("Inside share");
+		String album_name = req.getParameter("album_name");
+		String username = req.getParameter("username");
+		Album album = service.getAlbum(album_name, service.getUser(username).getUser_id());
+		if (album != null) {
+			mv.setViewName("showSharedAlbum");
+			mv.addObject("album_name", album.getAlbum_name());
+			mv.addObject("album_id", album.getAlbum_id());
 		} else {
 			mv.setViewName("400");
 		}

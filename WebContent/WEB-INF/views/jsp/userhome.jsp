@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | Home</title>
+<title>Moments | Welcome</title>
 <!-- Bootstrap -->
 <link href="/moments/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/moments/resources/css/nav.css" rel="stylesheet">
@@ -16,7 +16,7 @@
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script src="/moments/resources/angular/ng-infinite-scroll.min.js"></script>
 <script src="/moments/resources/angular/album_service.js"></script>
 <script src="/moments/resources/angular/album_controller.js"></script>
@@ -35,7 +35,7 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="">Moments</a>
+					<a class="navbar-brand" href="/moments">Moments</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
@@ -82,16 +82,14 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
-					<li><a href="">Shared Albums</a></li>
+					<li><a href="/moments/sharedalbums">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-				ng-controller="AlbumController as ctrl" ng-cloak>
+				ng-controller="AlbumController as ctrl" ng-init="ctrl.getAlbums()" ng-cloak>
 				<nav>
 					<ul class="breadcrumb">
 						<li class="active">Home</li>

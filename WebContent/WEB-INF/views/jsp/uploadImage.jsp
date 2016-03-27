@@ -5,12 +5,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | Home</title>
+<title>Moments | Upload</title>
 
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 <script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script src="/moments/resources/angular/ng-infinite-scroll.min.js"></script>
 
 <script src="/moments/resources/angular/album_service.js"></script>
@@ -37,19 +37,19 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="">Moments</a>
+					<a class="navbar-brand" href="/moments/">Moments</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li><a href="/moments">Home </a></li>
+						<li><a href="/moments/">Home </a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> Album <span class="caret"></span></a>
 							<ul class="dropdown-menu">
-								<li><a href="/moments">All Albums</a></li>
+								<li><a href="/moments/">All Albums</a></li>
 								<li role="separator" class="divider"></li>
 								<li><a data-target="#createAlbumModal" role="button"
 									data-backdrop="static" data-keyboard="false"
@@ -83,11 +83,9 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
-					<li><a href="">Shared Albums</a></li>
+					<li><a href="/moments/sharedalbums">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
@@ -119,7 +117,7 @@
 
 						<input type="submit" class="btn btn-danger" value="Upload">
 					</form>
-					<h1>{{ files }}</h1>
+
 					<div ng-show="show_upload_count">
 						<h2>Uploading Images: {{ upload_count }} / {{ total_files }}</h2>
 						<progress value="{{ upload_count }}" max="{{ total_files }}"

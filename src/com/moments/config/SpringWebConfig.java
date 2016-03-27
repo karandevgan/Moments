@@ -83,7 +83,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 		hibernateProperties.setProperty("hibernate.dialect",
 				"org.hibernate.dialect.MySQLDialect");
 		hibernateProperties.setProperty("hibernate.show_sql", "true");
-		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+		hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
 		sf.setHibernateProperties(hibernateProperties);
 		sf.setAnnotatedClasses(User.class, Album.class, Photo.class, Token.class);
 		return sf;

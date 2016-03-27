@@ -5,14 +5,11 @@
 			src="{{ album.coverphoto }}" />
 		</a>
 		<div class="caption">
-			<p class="make-inline">
+			<h4 class="make-inline">
 				<a href="/moments/user/album/{{ album.album_name }}">{{
 					album.album_name }}</a>&nbsp;&nbsp;
-			</p>
-			<div class="btn-group make-inline" style="vertical-align: top;">
-				<span role="button" data-toggle="dropdown"> <span
-					class="caret"></span>
-				</span>
+			</h4>
+			<div class="btn-group make-inline">
 				<ul class="dropdown-menu" role="menu">
 					<li><a data-target="#shareAlbumModal" role="button"
 						data-backdrop="static" data-keyboard="false" data-toggle="modal" ng-click="ctrl.createAlbumLink(album.album_name)">Share</a></li>
@@ -20,6 +17,10 @@
 					<li><a href="#"
 						ng-click="ctrl.downloadAlbum(album.album_name)">Download</a></li>
 				</ul>
+				<span role="button" data-toggle="dropdown"> <span
+					class="caret"></span>
+				</span>
+
 			</div>
 		</div>
 	</div>
