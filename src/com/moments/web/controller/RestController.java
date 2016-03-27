@@ -79,6 +79,20 @@ public class RestController {
 		}
 		return new ResponseEntity<List<String>>(responseList, returnStatus);
 	}
+	
+	@RequestMapping(value = "/userexists", method = RequestMethod.GET)
+	public ResponseEntity<List<String>> isUserExisting(@RequestParam String username) {
+		HttpStatus returnStatus = null;
+		List<String> responseList = new ArrayList<String>();
+		if (service.isRegistered(username)) {
+			responseList.add("Username is valid");
+			returnStatus = HttpStatus.OK;
+		} else {
+			responseList.add("Username is not registered");
+			returnStatus = HttpStatus.NOT_FOUND;
+		}
+		return new ResponseEntity<List<String>>(responseList, returnStatus);
+	}
 
 	@RequestMapping(value = "/emailvalidation", method = RequestMethod.GET)
 	public ResponseEntity<List<String>> isEmailRegistered(@RequestParam String email) {

@@ -61,6 +61,9 @@
 						<li><a href="/moments/user/allphotos">All Photos</a></li>
 						<li><a href="/moments/user/upload/${album_name}">Upload
 								Photos</a></li>
+						<li><a data-target="#shareWithUserModal" role="button"
+							data-backdrop="static" data-keyboard="false" data-toggle="modal">Share
+								With Users</a></li>
 					</ul>
 
 					<ul class="nav navbar-nav navbar-right">
@@ -118,7 +121,17 @@
 			</div>
 		</div>
 	</div>
+	<div ng-controller="AlbumController as ctrl"
+		ng-init="ctrl.album_name='${album_name}'">
+		<form name="shareAlbumForm" ng-submit="ctrl.sharesubmit()"
+			novalidate="novalidate">
+			<ng-include src="'/moments/pages/shareWithUserModal.html'"></ng-include>
+		</form>
+	</div>
+
+
 	<ng-include src="'/moments/pages/createAlbumModal.html'"></ng-include>
+
 
 	<script src="/moments/resources/js/bootstrap.js"></script>
 </body>

@@ -143,6 +143,32 @@ App.factory('AlbumService', [
 					var url = '/moments/user/photo/download?public_id='
 							+ public_id;
 					$window.open(url, "_blank");
+				},
+				
+				checkUsername : function(username) {
+					return $http.get("/moments/userexists", {
+						params : {
+							username : username
+						}
+					}).success(function(response) {
+						return response;
+
+					}).error(function(error) {
+						return error;
+					});
+				},
+				
+				shareAlbum : function(album_name, username) {
+					return $http.get("/moments/user/album/sharewithuser", {
+						params: {
+							album_name : album_name,
+							share_user : username
+						}
+					}).success(function(response, status){
+						return response;
+					}).error(function(error, status){
+						return error;
+					})
 				}
 			}
 		} ]);

@@ -3,10 +3,15 @@ package com.moments.DaoImpl;
 import java.util.Date;
 import java.util.List;
 
+import org.hibernate.NonUniqueObjectException;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.moments.Dao.AlbumDao;
 import com.moments.hibernateDaoSupport.CustomHibernateDaoSupport;
 import com.moments.model.Album;
+import com.moments.model.User;
 
+@Transactional
 public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao {
 
 	@Override
@@ -22,8 +27,8 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 	}
 
 	@Override
-	public void update() {
-
+	public void update(Album album) {
+		getHibernateTemplate().update(album);
 	}
 
 	@Override
@@ -87,5 +92,13 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 		if (albums.size() > 0)
 			return (Album) albums.get(0);
 		return null;
+	}
+	
+	@Override
+	public void shareAlbumWithUser(int album_id, User share_user) throws NonUniqueObjectException {
+		Album album = getAlbum(album_id);
+		getHibernateTemplate().initialize(album.getShared_users());
+		album.getShared_users().add(share_user);
+		update(album);
 	}
 }

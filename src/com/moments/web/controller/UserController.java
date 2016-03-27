@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -295,7 +296,7 @@ public class UserController {
 	public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String public_id = request.getParameter("public_id");
 		String image_path = service.getImagePath(public_id);
-		String image_name = image_path.substring(image_path.lastIndexOf('/')+1, image_path.length());
+		String image_name = image_path.substring(image_path.lastIndexOf('/') + 1, image_path.length());
 		System.out.println(image_name);
 		if (image_path != null) {
 			URL url = new URL(image_path);
@@ -305,10 +306,41 @@ public class UserController {
 				mimeType = "application/octet-stream";
 			System.out.println(mimeType);
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition",
-					String.format("attachment; filename=\"" + image_name + "\""));
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + image_name + "\""));
 			InputStream inputStream = url.openStream();
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		}
+	}
+
+	@RequestMapping(value = "/album/sharewithuser", params = { "album_name", "share_user" }, produces="application/json")
+	public ResponseEntity<List<String>> shareAlbumWithUser(HttpServletRequest request,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<List<String>> returnEntity = null;
+		List<String> response = new ArrayList<String>();
+		user = service.getUser(token_value, sessionUser);
+		System.out.println("Inside Share Album Controller");
+		if (user != null) {
+			String album_name = request.getParameter("album_name");
+			String share_user = request.getParameter("share_user");
+			Album album = service.getAlbum(album_name, user.getUser_id());
+			if (album != null) {
+				try {
+					service.shareAlbumWithUser(album.getAlbum_id(), service.getUser(share_user));
+					returnEntity = new ResponseEntity<List<String>>(HttpStatus.ACCEPTED);
+				} catch (DuplicateKeyException e) {
+					response.add("Already Shared With This User");
+					returnEntity = new ResponseEntity<List<String>>(response,HttpStatus.CONFLICT);
+				}
+			} else {
+				response.add("Album Does Not Exist");
+				returnEntity = new ResponseEntity<List<String>>(response,HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			response.add("Unauthorized");
+			returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
 	}
 }

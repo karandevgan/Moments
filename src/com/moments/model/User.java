@@ -3,7 +3,6 @@ package com.moments.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,9 +11,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -70,16 +66,11 @@ public class User implements Serializable {
 	@JsonManagedReference
 	private List<Album> albums;
 	
-	@JsonIgnore
-	@JsonManagedReference
-	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="tblSharedImages", joinColumns = {@JoinColumn(name="user_id")}, inverseJoinColumns = {@JoinColumn(name="photo_id")})
-	private Set<Photo> shared_images;
 	
 	@JsonIgnore
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<Token> tokens;
-	
+		
 	public int getUser_id() {
 		return user_id;
 	}
@@ -174,14 +165,6 @@ public class User implements Serializable {
 
 	public void setNumber_of_albums(Integer number_of_albums) {
 		this.number_of_albums = number_of_albums;
-	}
-	
-	public Set<Photo> getShared_images() {
-		return shared_images;
-	}
-
-	public void setShared_images(Set<Photo> shared_images) {
-		this.shared_images = shared_images;
 	}
 
 	public List<Token> getTokens() {

@@ -1,0 +1,41 @@
+<div id="shareWithUserModal" class="modal fade" role="dialog">
+	<div class="modal-dialog">
+
+		<!--Login Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Enter UserName</h4>
+			</div>
+
+
+			<div class="modal-body">
+				<div class="alert alert-warning" role="alert" ng-show="showDiv">
+					<ul>
+						<li ng-repeat="error in errorMsgs">{{ error }}</li>
+					</ul>
+				</div>
+				<div>
+					<label for="inputUserName" class="sr-only">User Name</label> <input
+						type="text" id="inputUserName" class="form-control"
+						pattern="^[a-z][a-z0-9]{5,15}$" placeholder="User Name"
+						name="username" ng-model="ctrl.username"
+						ng-change="ctrl.checkUsername()" required> <span
+						class="formerror" ng-show="shareAlbumForm.username.$touched">
+						<span ng-show="shareAlbumForm.username.$error.required">UserName
+							is required.</span> <span
+						ng-show="shareAlbumForm.username.$error.pattern">Username
+							must start with lowercase letter, can contain only lowercase
+							characters and digits and should be between 6 to 15 characters.</span> <span
+						ng-show="showUsernameStatus">{{ usernameStatus }}</span>
+					</span>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<input class="btn btn-primary" type="submit" value="Share With User" />
+				<button type="button" class="btn btn-default" data-dismiss="modal"
+					ng-click="ctrl.reset()">Close</button>
+			</div>
+		</div>
+
+	</div>
+</div>

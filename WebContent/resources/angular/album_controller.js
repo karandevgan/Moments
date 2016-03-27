@@ -9,6 +9,9 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				last_modified : '',
 			};
 			
+			this.username = '';
+			this.album_name = '';
+			
 			$scope.albums = [];
 
 			this.createAlbum = function(album) {
@@ -65,11 +68,54 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 				});
 			};
 			
+			this.checkUsername = function() {
+				if (!$scope.shareAlbumForm.username.$error.required
+						&& !$scope.shareAlbumForm.username.$error.pattern) {
+					$scope.showUsernameStatus = true;
+					AlbumService
+							.checkUsername(this.username)
+							.success(
+									function(response) {
+										$scope.usernameStatus = response[0];
+										$scope.showUsernameStatus = false;
+										$scope.isUserNameValid = true;
+									})
+							.error(
+									function(error) {
+										$scope.usernameStatus = error[0];
+										$scope.isUserNameValid = false;
+									});
+				} else {
+					$scope.showUsernameStatus = false;
+				}
+			};
+			
 			this.submit = function() {
 				if ($scope.createAlbumForm.$valid)
 					this.createAlbum(this.album);
 
 				console.log("Submit called");
+			};
+			
+			this.shareAlbum = function(album_name, username) {
+				console.log(album_name);
+				console.log(username);
+				AlbumService.shareAlbum(album_name, username).success(function(response){
+					console.log(response);
+					$window.location.href='';
+				}).error(function(response){
+					$scope.showDiv = true;
+					$scope.errorMsgs = response;
+					console.error(response);
+				});
+			};
+			
+			this.sharesubmit = function() {
+				if ($scope.shareAlbumForm.$valid
+						&& $scope.isUserNameValid) {
+					this.shareAlbum(this.album_name, this.username)
+				}
+				console.log("Submit Called");
 			};
 
 			this.reset = function() {
@@ -164,16 +210,18 @@ function($scope, $window, AlbumService) {
 			$scope.showErrorDiv = true;
 			this.isInvalidFiles = true;
     	}
-    	for (var i=0; i < $scope.total_files; i++) {
-    		var type = files[i].type;
-    		console.log(type);
-    		if (valid_types.indexOf(type) == -1){
-    			$scope.error = "Only jpeg and png files are allowed.";
-    			$scope.showErrorDiv = true;
-    			this.isInvalidFiles = true;
-    			console.log("Invalid file types");
-    			break;
-    		}
+    	else {
+	    	for (var i=0; i < $scope.total_files; i++) {
+	    		var type = files[i].type;
+	    		console.log(type);
+	    		if (valid_types.indexOf(type) == -1){
+	    			$scope.error = "Only jpeg and png files are allowed.";
+	    			$scope.showErrorDiv = true;
+	    			this.isInvalidFiles = true;
+	    			console.log("Invalid file types");
+	    			break;
+	    		}
+	    	}
     	}
     	if (this.isInvalidFiles) {
     		$scope.uploadPhotoForm.$valid = false;
@@ -184,6 +232,11 @@ function($scope, $window, AlbumService) {
     };
 		
 	this.uploadFile = function() {
+		if ($scope.total_files == 0) {
+    		$scope.error = "Please select atleast one file";
+			$scope.showErrorDiv = true;
+			$scope.uploadPhotoForm.$valid = true;
+    	}
 		console.log($scope.uploadPhotoForm.$valid);
 		if ($scope.uploadPhotoForm.$valid) {
 			$scope.show_upload_count = true;

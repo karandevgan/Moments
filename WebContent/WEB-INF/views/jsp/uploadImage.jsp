@@ -119,7 +119,7 @@
 
 						<input type="submit" class="btn btn-danger" value="Upload">
 					</form>
-
+					<h1>{{ files }}</h1>
 					<div ng-show="show_upload_count">
 						<h2>Uploading Images: {{ upload_count }} / {{ total_files }}</h2>
 						<progress value="{{ upload_count }}" max="{{ total_files }}"
