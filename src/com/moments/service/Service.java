@@ -7,7 +7,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
+import org.hibernate.NonUniqueObjectException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +28,7 @@ import com.moments.model.Photo;
 import com.moments.model.Token;
 import com.moments.model.User;
 
+@Transactional
 public class Service {
 	@Autowired
 	private UserDao userDao;
@@ -40,58 +43,48 @@ public class Service {
 	private TokenDao tokenDao;
 
 	@SuppressWarnings("rawtypes")
-	private Map config = ObjectUtils.asMap("cloud_name", "kaydewgun", "api_key", "757818147311579", "api_secret",
-			"Jo1xhkKMAiHSMa1ySvSc48r6qlQ");
+	private Map config = ObjectUtils.asMap("cloud_name", System.getenv().get("CLOUD_NAME"), "api_key",
+			System.getenv().get("API_KEY"), "api_secret", System.getenv().get("API_SECRET"));
 
-	@Transactional
 	public boolean save(User user) {
 		return userDao.save(user);
 
 	}
 
-	@Transactional
 	public boolean isRegistered(String username) {
 		return userDao.isRegistered(username);
 
 	}
 
-	@Transactional
 	public boolean isEmailRegistered(String email) {
 		return userDao.isEmailRegistered(email);
 	}
 
-	@Transactional
 	public User getUser(User user) {
 		return userDao.getUser(user);
 	}
 
-	@Transactional
 	public User getUser(String username) {
 		return userDao.getUser(username);
 	}
 
-	@Transactional
-	public List<Photo> getTotalPhotos(User user) {
-		return photoDao.getTotalPhotos(user);
+	public List<Photo> getTotalPhotos(User user, int call) {
+		return photoDao.getTotalPhotos(user, call);
 	}
 
-	@Transactional
 	public Album getAlbum(int album_id) {
 		return albumDao.getAlbum(album_id);
 	}
 
-	@Transactional
 	public Album getAlbum(String album_name, int user_id) {
 		return albumDao.getAlbum(album_name, user_id);
 	}
 
-	@Transactional
 	public boolean update(User user) {
 		return userDao.update(user);
 
 	}
 
-	@Transactional
 	public boolean createAlbum(User user, Album album) {
 		album.setUser(user);
 		album.setCreation_date(new Date());
@@ -105,13 +98,11 @@ public class Service {
 		return isAlbumSaved && isUserUpdated;
 	}
 
-	@Transactional
 	public boolean deleteAlbum(String album_to_delete, String album_name, User user) {
 		Cloudinary cloudinary = new Cloudinary(config);
 		Api api = cloudinary.api();
 		try {
-			api.deleteResourcesByPrefix(album_to_delete,
-			ObjectUtils.emptyMap());
+			api.deleteResourcesByPrefix(album_to_delete, ObjectUtils.emptyMap());
 			albumDao.delete(album_name, user.getUser_id());
 			user.setNumber_of_albums(user.getNumber_of_albums() - 1);
 			update(user);
@@ -121,20 +112,19 @@ public class Service {
 		}
 	}
 
-	@Transactional
 	public boolean deletePhoto(String public_id, User user) {
 		Cloudinary cloudinary = new Cloudinary(config);
 		try {
 			if (photoDao.delete(public_id, user.getUser_id()))
-					cloudinary.uploader().destroy(public_id, ObjectUtils.emptyMap());
+				cloudinary.uploader().destroy(public_id, ObjectUtils.emptyMap());
 			return true;
 		} catch (Exception e) {
 			return false;
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
-	@Transactional
+
 	public boolean uploadImage(Album album, User user, MultipartFile file) {
 		System.out.println("Uploading File.....");
 		File temp = null;
@@ -152,15 +142,15 @@ public class Service {
 			String public_id = (String) uploadResult.get("public_id");
 			String thumb_url = cloudinary.url().transformation(new Transformation().height(200).crop("scale"))
 					.imageTag(public_id).split("'")[1];
-			
+
 			String slide_url = cloudinary.url().transformation(new Transformation().width(800).crop("scale"))
 					.imageTag(public_id).split("'")[1];
-			
+
 			Photo photo = new Photo();
 			photo.setAlbum(album);
 			photo.setCreation_date(new Date());
 			photo.setPath(uploadResult.get("url").toString());
-			
+
 			photo.setSlide_path(slide_url);
 			photo.setThumb_path(thumb_url);
 			photo.setPublic_id(public_id);
@@ -187,31 +177,26 @@ public class Service {
 		}
 	}
 
-	@Transactional
 	public List<Album> getAlbums(int user_id) {
 		return albumDao.getAlbums(user_id);
 	}
 
-	@Transactional
 	public List<Photo> getPhotos(String album_name, User user, int call) {
 		return photoDao.getPhotos(albumDao.getAlbum(album_name, user.getUser_id()), user, call);
 	}
 
-	@Transactional
 	public List<Photo> getPhotosShared(int album_id, String album_name, int call) {
 		Album album = albumDao.getAlbum(album_id, album_name);
 		if (album != null)
 			return photoDao.getPhotos(album, call);
-		else 
+		else
 			return null;
 	}
 
-	@Transactional
 	public boolean isAlbumAvailable(int user_id, String album_name) {
 		return albumDao.isAlbumAvailable(user_id, album_name);
 	}
 
-	@Transactional
 	public String getToken(User user) {
 		Random random = new SecureRandom();
 		String token_value = new BigInteger(1000, random).toString(32);
@@ -226,12 +211,10 @@ public class Service {
 			return null;
 	}
 
-	@Transactional
 	public boolean isTokenValid(String token_value) {
 		return tokenDao.isTokenValid(token_value);
 	}
 
-	@Transactional
 	public User getUserFromToken(String token_value) {
 		return tokenDao.getUser(token_value);
 	}
@@ -252,5 +235,13 @@ public class Service {
 
 	public String getImagePath(String public_id) {
 		return photoDao.getImagePath(public_id);
+	}
+
+	public void shareAlbumWithUser(int album_id, User share_user) throws NonUniqueObjectException {
+		albumDao.shareAlbumWithUser(album_id, share_user);
+	}
+
+	public Set<Album> getSharedAlbums(User user) {
+		return userDao.getSharedAlbums(user);
 	}
 }

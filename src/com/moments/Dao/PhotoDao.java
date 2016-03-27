@@ -16,7 +16,7 @@ public interface PhotoDao {
 	
 	public void details();
 	
-	public List<Photo> getTotalPhotos(User user);
+	public List<Photo> getTotalPhotos(User user, int call);
 	
 	public boolean isRegistered(int album_id);
 	

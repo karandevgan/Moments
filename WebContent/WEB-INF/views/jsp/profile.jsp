@@ -81,12 +81,10 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
 					<li><a href="">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
-					<li><a href="">My Shared Albums</a></li>
+                	<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

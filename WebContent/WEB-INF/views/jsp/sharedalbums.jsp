@@ -5,23 +5,21 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | Upload</title>
-
-<script type="text/javascript"
-	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script type="text/javascript"
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script src="/resources/angular/ng-infinite-scroll.min.js"></script>
-
-<script src="/resources/angular/album_service.js"></script>
-<script src="/resources/angular/album_controller.js"></script>
-
+<title>Moments | Home</title>
 <!-- Bootstrap -->
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/resources/css/nav.css" rel="stylesheet">
 <link href="/resources/css/sidebar.css" rel="stylesheet">
 <link href="/resources/css/signin.css" rel="stylesheet">
 <link href="/resources/css/all.css" rel="stylesheet">
+
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script src="/resources/angular/ng-infinite-scroll.min.js"></script>
+<script src="/resources/angular/album_service.js"></script>
+<script src="/resources/angular/album_controller.js"></script>
 </head>
 
 <body ng-app="myApp">
@@ -44,7 +42,7 @@
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li><a href="/">Home </a></li>
+						<li><a href="/">Home</span></a></li>
 						<li class="dropdown"><a href="#" class="dropdown-toggle"
 							data-toggle="dropdown" role="button" aria-haspopup="true"
 							aria-expanded="false"> Album <span class="caret"></span></a>
@@ -56,8 +54,6 @@
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
 						<li><a href="/user/allphotos">All Photos</a></li>
-						<li class="active"><a href="#">Upload Photos<span
-								class="sr-only">(current)</span></a>
 					</ul>
 
 					<ul class="nav navbar-nav navbar-right">
@@ -75,61 +71,59 @@
 		</nav>
 	</div>
 
+
+
 	<div class="container-fluid">
 		<div class="row">
 			<nav class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
-					<li class="active"><a href="#">Overview <span
-							class="sr-only">(current)</span></a></li>
+					<li><a href="#">Overview</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="/sharedalbums">Shared Albums</a></li>
+					<li class="active"><a href="/sharedalbums">Shared Albums <span
+							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
+				ng-controller="AlbumController as ctrl"
+				ng-init="ctrl.getSharedAlbums()" ng-cloak>
 				<nav>
 					<ul class="breadcrumb">
-						<li><a href="/">Home</a></li>
-						<li><a href="/user/album/${album_name}">${album_name}</a></li>
-						<li class="active">Upload</li>
+						<li class="active">Home</li>
 					</ul>
 				</nav>
-				<div ng-controller="UploadController as ctrl"
-					ng-init="album_name='${album_name}'" ng-cloak>
-					<div class="alert alert-warning" role="alert"
-						ng-show="showErrorDiv">
-						<ul>
-							<li>{{ error }}</li>
-						</ul>
-					</div>
-					<form name="uploadPhotoForm" ng-submit="ctrl.uploadFile()"
-						novalidate="novalidate" ng-show="show_upload_form">
-						<div class="form-group">
-							<label for="img">Select Images</label><br> <input
-								type="file" id="file1" multiple ng-files="getTheFiles($files)"
-								ng-required="true" />
-							<p class="help-block">Only jpg and png images are allowed.</p>
-						</div>
-
-
-						<input type="submit" class="btn btn-danger" value="Upload">
-					</form>
-
-					<div ng-show="show_upload_count">
-						<h2>Uploading Images: {{ upload_count }} / {{ total_files }}</h2>
-						<progress value="{{ upload_count }}" max="{{ total_files }}"
-							style="width: 50%"></progress>
-					</div>
+				<div class="alert alert-warning" role="alert"
+					ng-show="showUpdateDiv">
+					<ul>
+						<li>{{ update }}</li>
+					</ul>
 				</div>
+				<h1 class="page-header">{{ page_header_text }}</h1>
+				<table class="table  table-hover table-stripped">
+					<thead>
+						<tr>
+							<th>Album Name</th>
+							<th>Shared By</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="album in albums">
+							<td><a
+								href="/showsharedalbum?album_name={{album.album_name}}&username={{ album.user.username }}">{{
+									album.album_name }}</a></td>
+							<td>{{ album.user.username }}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>
 
-
 	<ng-include src="'/pages/createAlbumModal.html'"></ng-include>
+
 	<script src="/resources/js/bootstrap.js"></script>
 </body>
 </html>

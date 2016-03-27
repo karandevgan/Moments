@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | Home</title>
+<title>Moments | Welcome</title>
 <!-- Bootstrap -->
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/resources/css/nav.css" rel="stylesheet">
@@ -82,16 +82,14 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
-					<li><a href="">Shared Albums</a></li>
+					<li><a href="/sharedalbums">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
-				ng-controller="AlbumController as ctrl" ng-cloak>
+				ng-controller="AlbumController as ctrl" ng-init="ctrl.getAlbums()" ng-cloak>
 				<nav>
 					<ul class="breadcrumb">
 						<li class="active">Home</li>

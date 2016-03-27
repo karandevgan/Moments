@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -270,16 +271,16 @@ public class UserController {
 		return returnEntity;
 	}
 
-	@RequestMapping(value = "/getallphotos")
+	@RequestMapping(value = "/getallphotos", params = {"call"})
 	public ResponseEntity<List<Photo>> allPhotos(HttpServletRequest request,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
 		User user = null;
 		Object sessionUser = session.getAttribute("username");
 		ResponseEntity<List<Photo>> returnEntity = null;
 		user = service.getUser(token_value, sessionUser);
-
+		int call = Integer.parseInt(request.getParameter("call"));
 		if (user != null) {
-			List<Photo> photos = service.getTotalPhotos(user);
+			List<Photo> photos = service.getTotalPhotos(user, call);
 			if (photos.size() > 0)
 				returnEntity = new ResponseEntity<List<Photo>>(photos, HttpStatus.OK);
 			else
@@ -310,5 +311,58 @@ public class UserController {
 			InputStream inputStream = url.openStream();
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		}
+	}
+	
+	@RequestMapping(value = "/album/sharewithuser", params = { "album_name", "share_user" }, produces="application/json")
+	public ResponseEntity<List<String>> shareAlbumWithUser(HttpServletRequest request,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<List<String>> returnEntity = null;
+		List<String> response = new ArrayList<String>();
+		user = service.getUser(token_value, sessionUser);
+		System.out.println("Inside Share Album Controller");
+		if (user != null) {
+			String album_name = request.getParameter("album_name");
+			String share_user = request.getParameter("share_user");
+			Album album = service.getAlbum(album_name, user.getUser_id());
+			if (album != null) {
+				try {
+					service.shareAlbumWithUser(album.getAlbum_id(), service.getUser(share_user));
+					returnEntity = new ResponseEntity<List<String>>(HttpStatus.ACCEPTED);
+				} catch (Exception e) {
+					response.add("Already Shared With This User");
+					returnEntity = new ResponseEntity<List<String>>(response,HttpStatus.CONFLICT);
+				}
+			} else {
+				response.add("Album Does Not Exist");
+				returnEntity = new ResponseEntity<List<String>>(response,HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			response.add("Unauthorized");
+			returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
+	}
+	
+	@RequestMapping(value = "/sharedalbums", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Set<Album>> getSharedAlbums(HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		HttpStatus returnStatus = null;
+		user = service.getUser(token_value, sessionUser);
+		Set<Album> albums = null;
+		if (user != null) {
+			albums = service.getSharedAlbums(user);
+			System.out.println(albums);
+			if (albums != null)
+				returnStatus = HttpStatus.OK;
+			else
+				returnStatus = HttpStatus.NO_CONTENT;
+		} else {
+			returnStatus = HttpStatus.UNAUTHORIZED;
+		}
+		return new ResponseEntity<Set<Album>>(albums, returnStatus);
 	}
 }

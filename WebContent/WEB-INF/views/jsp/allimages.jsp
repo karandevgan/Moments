@@ -7,11 +7,14 @@
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <title>Moments | Home</title>
 
-<script
+<script type="text/javascript"
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-
+<script src="/resources/angular/ng-infinite-scroll.min.js"></script>
 <script src="/resources/angular/album_service.js"></script>
 <script src="/resources/angular/album_controller.js"></script>
+
 
 <!-- Bootstrap -->
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
@@ -81,17 +84,34 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
-					<li><a href="">Shared Albums</a></li>
+					
+					<li><a href="/sharedalbums">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
+					
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-				<div class="col-xs-6 col-md-3">
-					<h1 class="page-header">All Images</h1>
+				<nav>
+					<ul class="breadcrumb">
+						<li><a href="/">Home</a></li>
+						<li class="active">All Photos</li>
+					</ul>
+				</nav>
+				<div ng-controller="GetAlbumController as ctrl"
+					infinite-scroll="ctrl.getAllPhotos()"
+					infinite-scroll-distance="0" infinite-scroll-disabled="busy"
+					ng-cloak>
+					<h1 class="page-header">{{ page_header_text }}</h1>
+					<div class="col-xs-5 col-sm-5 col-md-4" ng-repeat="photo in photos">
+						<ng-include src="albumPhotos"> <img
+							src="/resources/static/loader.gif" /></ng-include>
+					</div>
+					<div class="clearfix"></div>
+					<div ng-show="busy && notComplete">
+						<img src="/resources/static/loader.gif" />Loading data...
+					</div>
 				</div>
 			</div>
 		</div>
@@ -100,8 +120,7 @@
 	
 	<ng-include src="'/pages/createAlbumModal.html'"></ng-include>
 	
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
 	<script src="/resources/js/bootstrap.js"></script>
 </body>
 </html>

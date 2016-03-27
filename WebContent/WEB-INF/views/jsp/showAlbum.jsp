@@ -8,7 +8,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | Home</title>
+<title>Moments | ${ album_name }</title>
 
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -39,7 +39,7 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="">Moments</a>
+					<a class="navbar-brand" href="/">Moments</a>
 				</div>
 
 				<!-- Collect the nav links, forms, and other content for toggling -->
@@ -59,8 +59,10 @@
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
 						<li><a href="/user/allphotos">All Photos</a></li>
-						<li><a href="/user/upload/${album_name}">Upload
-								Photos</a></li>
+						<li><a href="/user/upload/${album_name}">Upload Photos</a></li>
+						<li><a data-target="#shareWithUserModal" role="button"
+							data-backdrop="static" data-keyboard="false" data-toggle="modal">Share
+								With Users</a></li>
 					</ul>
 
 					<ul class="nav navbar-nav navbar-right">
@@ -86,11 +88,9 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">Shared Images</a></li>
-					<li><a href="">Shared Albums</a></li>
+					<li><a href="/sharedalbums">Shared Albums</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Images</a></li>
 					<li><a href="">My Shared Albums</a></li>
 				</ul>
 			</nav>
@@ -118,6 +118,15 @@
 			</div>
 		</div>
 	</div>
+
+	<div ng-controller="AlbumController as ctrl"
+		ng-init="ctrl.album_name='${album_name}'">
+		<form name="shareAlbumForm" ng-submit="ctrl.sharesubmit()"
+			novalidate="novalidate">
+			<ng-include src="'/pages/shareWithUserModal.html'"></ng-include>
+		</form>
+	</div>
+
 	<ng-include src="'/pages/createAlbumModal.html'"></ng-include>
 
 	<script src="/resources/js/bootstrap.js"></script>
