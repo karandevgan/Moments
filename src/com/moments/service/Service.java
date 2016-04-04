@@ -89,7 +89,7 @@ public class Service {
 		album.setUser(user);
 		album.setCreation_date(new Date());
 		album.setLast_modified(new Date());
-		album.setCoverphoto("/resources/static/corousel1.jpg");
+		album.setCoverphoto("/resources/static/emptyAlbum.jpg");
 		album.setUser(user);
 		boolean isAlbumSaved = albumDao.save(album);
 		user.setNumber_of_albums(user.getNumber_of_albums() + 1);
@@ -243,5 +243,21 @@ public class Service {
 
 	public Set<Album> getSharedAlbums(User user) {
 		return userDao.getSharedAlbums(user);
+	}
+	
+	public Map<String, Set<User>> mySharedAlbums(int user_id){
+		return albumDao.mySharedAlbums(user_id);
+	}
+	
+	public void unshare(int album_id, User user){
+		albumDao.unshare(album_id, user);
+	}
+
+	public boolean isAlbumShared(int album_id, User user) {
+		return albumDao.isAlbumShared(album_id, user);	
+	}
+
+	public void changeCover(Album album, String path) {
+		albumDao.changeCover(album, path);
 	}
 }

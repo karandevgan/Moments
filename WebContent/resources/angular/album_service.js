@@ -78,6 +78,17 @@ App.factory('AlbumService', [
 						return data;
 					});
 				},
+				
+				getMySharedAlbums : function() {
+					return $http.get("/user/mysharedalbums").success(
+							function(responseData, status) {
+								return responseData;
+							}).error(function(data, status) {
+						console.error("Error while getting shared albums");
+						return data;
+					});
+				},
+				
 				getAlbums : function() {
 					return $http.get("/user/albums").success(
 							function(responseData, status) {
@@ -189,6 +200,26 @@ App.factory('AlbumService', [
 					})
 				},
 				
+				unshare : function(album_name, username) {
+					return $http.get("/user/album/unshare", {
+						params : {
+							album_name : album_name,
+							share_user : username
+						}
+					}).success(function(response, status) {
+						return response;
+					}).error(function(error, status) {
+						return error;
+					});
+				},
 				
+				makeCoverPhoto : function(path, album_name) {
+					return $http.get("/user/album/makecover", {
+						params : {
+							path : path,
+							album_name : album_name
+						}
+					});
+				}
 			}
 		} ]);

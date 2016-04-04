@@ -1,6 +1,3 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +5,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | ${ album_name }</title>
+<title>Moments | My Shared Albums</title>
+<!-- Bootstrap -->
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
+<link href="/resources/css/nav.css" rel="stylesheet">
+<link href="/resources/css/sidebar.css" rel="stylesheet">
+<link href="/resources/css/signin.css" rel="stylesheet">
+<link href="/resources/css/all.css" rel="stylesheet">
 
 <script type="text/javascript"
 	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -17,13 +20,6 @@
 <script src="/resources/angular/ng-infinite-scroll.min.js"></script>
 <script src="/resources/angular/album_service.js"></script>
 <script src="/resources/angular/album_controller.js"></script>
-
-<!-- Bootstrap -->
-<link href="/resources/css/bootstrap.min.css" rel="stylesheet">
-<link href="/resources/css/nav.css" rel="stylesheet">
-<link href="/resources/css/sidebar.css" rel="stylesheet">
-<link href="/resources/css/signin.css" rel="stylesheet">
-<link href="/resources/css/all.css" rel="stylesheet">
 </head>
 
 <body ng-app="myApp">
@@ -46,11 +42,10 @@
 				<div class="collapse navbar-collapse"
 					id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
-						<li><a href="/">Home </a></li>
-						<li class="dropdown active"><a href="#"
-							class="dropdown-toggle" data-toggle="dropdown" role="button"
-							aria-haspopup="true" aria-expanded="false"> Album <span
-								class="caret"></span> <span class="sr-only">(current)</span></a>
+						<li><a href="/">Home</span></a></li>
+						<li class="dropdown"><a href="#" class="dropdown-toggle"
+							data-toggle="dropdown" role="button" aria-haspopup="true"
+							aria-expanded="false"> Album <span class="caret"></span></a>
 							<ul class="dropdown-menu">
 								<li><a href="/">All Albums</a></li>
 								<li role="separator" class="divider"></li>
@@ -59,10 +54,6 @@
 									data-toggle="modal">Create Album</a></li>
 							</ul></li>
 						<li><a href="/user/allphotos">All Photos</a></li>
-						<li><a href="/user/upload/${album_name}">Upload Photos</a></li>
-						<li><a data-target="#shareWithUserModal" role="button"
-							data-backdrop="static" data-keyboard="false" data-toggle="modal">Share
-								With Users</a></li>
 					</ul>
 
 					<ul class="nav navbar-nav navbar-right">
@@ -80,51 +71,56 @@
 		</nav>
 	</div>
 
+
+
 	<div class="container-fluid">
 		<div class="row">
 			<nav class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
-					<li class="active"><a href="#">Overview <span
-							class="sr-only">(current)</span></a></li>
+					<li><a href="#">Overview</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="/sharedalbums">Shared Albums</a></li>
+					<li><a href="/sharedalbums">Shared
+							Albums <span class="sr-only">(current)</span>
+					</a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="/mysharedalbums">My Shared Albums</a></li>
+					<li class="active"><a href="/mysharedalbums">My Shared Albums</a></li>
 				</ul>
 			</nav>
-			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
+				ng-controller="AlbumController as ctrl"
+				ng-init="ctrl.getMySharedAlbums()" ng-cloak>
 				<nav>
 					<ul class="breadcrumb">
-						<li><a href="/">Home</a></li>
-						<li class="active">${album_name}</li>
+						<li class="active">Home</li>
 					</ul>
 				</nav>
-				<div ng-controller="GetAlbumController as ctrl"
-					infinite-scroll="ctrl.getAlbum('${album_name}')"
-					infinite-scroll-distance="0" infinite-scroll-disabled="busy"
-					ng-init="ctrl.album_name='${album_name}'" ng-cloak>
-					<h1 class="page-header">{{ page_header_text }}</h1>
-					<div class="col-xs-5 col-sm-5 col-md-4" ng-repeat="photo in photos">
-						<ng-include src="albumPhotos"> <img
-							src="/resources/static/loader.gif" /></ng-include>
-					</div>
-					<div class="clearfix"></div>
-					<div ng-show="busy && notComplete">
-						<img src="/resources/static/loader.gif" />Loading data...
-					</div>
+				<div class="alert alert-warning" role="alert"
+					ng-show="showUpdateDiv">
+					<ul>
+						<li>{{ update }}</li>
+					</ul>
 				</div>
+				<h1 class="page-header">{{ page_header_text }}</h1>
+				<table class="table  table-hover table-stripped" ng-show="showTable">
+					<thead>
+						<tr>
+							<th>Album Name</th>
+							<th>Shared With</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="(album_name, users) in sharedAlbums">
+							<td><a href="/user/album/{{album_name}}">{{ album_name }}</a></td>
+							<td>
+								<p ng-repeat="user in users">{{ user.username }}&nbsp;&nbsp;&nbsp;<a href="#" ng-click="ctrl.unshare(album_name, user.username)">Unshare</a></p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
-	</div>
-
-	<div ng-controller="AlbumController as ctrl"
-		ng-init="ctrl.album_name='${album_name}'">
-		<form name="shareAlbumForm" ng-submit="ctrl.sharesubmit()"
-			novalidate="novalidate">
-			<ng-include src="'/pages/shareWithUserModal.html'"></ng-include>
-		</form>
 	</div>
 
 	<ng-include src="'/pages/createAlbumModal.html'"></ng-include>

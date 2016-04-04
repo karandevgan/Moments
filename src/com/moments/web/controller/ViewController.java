@@ -69,6 +69,7 @@ public class ViewController {
 
 		if (album != null) {
 			mv.addObject("album_name", album.getAlbum_name());
+			mv.addObject("album_description", album.getDescription());
 			mv.setViewName("showAlbum");
 		} else {
 			mv.setViewName("404");
@@ -123,46 +124,66 @@ public class ViewController {
 				mv.setViewName("showSharedAlbum");
 				mv.addObject("album_name", album.getAlbum_name());
 				mv.addObject("album_id", album.getAlbum_id());
+				mv.addObject("album_description", album.getDescription());
 			} catch (Exception e) {
 				mv.setViewName("404");
 			}
 		} else {
-			mv.setViewName("400");
+			mv.setViewName("404");
 		}
 		return mv;
 	}
-	
+
 	@RequestMapping(value = { "/sharedalbums" }, method = RequestMethod.GET)
-	public ModelAndView getMySharedAlbums(HttpServletRequest req) {
-		ModelAndView model = new ModelAndView();
-		if (session.getAttribute("username") != null) {
-			model.addObject("username", session.getAttribute("username"));
-			model.setViewName("sharedalbums");
-		} else {
-			if (req.getParameter("newuser") != null)
-				model.addObject("newuser", true);
-			else
-				model.addObject("newuser", false);
-			model.setViewName("home");
+	public ModelAndView getSharedAlbums(HttpServletRequest req) {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
 		}
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("username", session.getAttribute("username"));
+		model.setViewName("sharedalbums");
+
+		return model;
+	}
+
+	@RequestMapping(value = { "/mysharedalbums" }, method = RequestMethod.GET)
+	public ModelAndView getMySharedAlbums(HttpServletRequest req) {
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
+
+		ModelAndView model = new ModelAndView();
+		model.addObject("username", session.getAttribute("username"));
+		model.setViewName("mySharedAlbums");
+
 		return model;
 	}
 
 	@RequestMapping(value = "/showsharedalbum", params = { "album_name", "username" })
 	public ModelAndView showSharedAlbum(HttpServletRequest req) {
-
+		if (session.getAttribute("username") == null) {
+			return new ModelAndView("redirect:" + redirectHome);
+		}
 		ModelAndView mv = new ModelAndView();
-		System.out.println("Inside share");
+
 		String album_name = req.getParameter("album_name");
 		String username = req.getParameter("username");
 		Album album = service.getAlbum(album_name, service.getUser(username).getUser_id());
 		if (album != null) {
-			mv.setViewName("showSharedAlbum");
-			mv.addObject("album_name", album.getAlbum_name());
-			mv.addObject("album_id", album.getAlbum_id());
+			if (service.isAlbumShared(album.getAlbum_id(),
+					service.getUser(session.getAttribute("username").toString()))) {
+				mv.setViewName("showSharedAlbum");
+				mv.addObject("album_name", album.getAlbum_name());
+				mv.addObject("album_id", album.getAlbum_id());
+				mv.addObject("album_description", album.getDescription());
+			} else {
+				mv.setViewName("404");
+			}
 		} else {
-			mv.setViewName("400");
+			mv.setViewName("404");
 		}
+
 		return mv;
 	}
 }

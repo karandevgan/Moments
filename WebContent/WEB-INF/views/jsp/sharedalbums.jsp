@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-<title>Moments | Home</title>
+<title>Moments | Shared Albums</title>
 <!-- Bootstrap -->
 <link href="/resources/css/bootstrap.min.css" rel="stylesheet">
 <link href="/resources/css/nav.css" rel="stylesheet">
@@ -84,7 +84,7 @@
 							class="sr-only">(current)</span></a></li>
 				</ul>
 				<ul class="nav nav-sidebar">
-					<li><a href="">My Shared Albums</a></li>
+					<li><a href="/mysharedalbums">My Shared Albums</a></li>
 				</ul>
 			</nav>
 			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main"
@@ -102,7 +102,7 @@
 					</ul>
 				</div>
 				<h1 class="page-header">{{ page_header_text }}</h1>
-				<table class="table  table-hover table-stripped">
+				<table class="table  table-hover table-stripped" ng-show="showTable">
 					<thead>
 						<tr>
 							<th>Album Name</th>

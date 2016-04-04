@@ -46,14 +46,39 @@ App.controller('AlbumController', [ '$scope', '$window', 'AlbumService',
 					$scope.albums = response;
 					if($scope.albums.length > 0) {
 						$scope.page_header_text = "Albums shared with you";
+						$scope.showTable = true;
 					}
 					else {
 						$scope.page_header_text = "You have no albums shared with you.";
+						$scope.showTable = false;
 					}
 				}).error(function(data) {
 					$scope.page_header_text = "Error while retrieving albums.";
-				}).finally(function() {
-					console.log($scope.albumData);
+				});
+			};
+			
+			this.unshare = function(album_name, username) {
+				AlbumService.unshare(album_name, username).success(function(response){
+					$window.location.href="";
+				}).error(function(data) {
+					
+				});
+			};
+			
+			this.getMySharedAlbums = function() {
+				AlbumService.getMySharedAlbums().success(function(response) {
+					$scope.sharedAlbums = response;
+					console.log($scope.sharedAlbums);
+					if(Object.keys($scope.sharedAlbums).length > 0) {
+						$scope.page_header_text = "Albums shared by you";
+						$scope.showTable = true;
+					}
+					else {
+						$scope.page_header_text = "You have no albums shared with anyone.";
+						$scope.showTable = false;
+					}
+				}).error(function(data) {
+					$scope.page_header_text = "Error while retrieving albums.";
 				});
 			};
 			
@@ -146,6 +171,8 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 			$scope.busy = false;
 			$scope.notComplete = true;
 			$scope.photos = [];
+			this.album_name = '';
+			
 			this.getAlbum = function(album_name) {
 				if ($scope.busy) return;
 			    $scope.busy = true;
@@ -228,6 +255,12 @@ App.controller('GetAlbumController', [ '$scope', '$window', 'AlbumService',
 			this.downloadPhoto = function(public_id) {
 				console.log(public_id);
 				AlbumService.downloadPhoto(public_id);
+			};
+			
+			this.makeCoverPhoto = function(path){
+				console.log(this.album_name);
+				AlbumService.makeCoverPhoto(path, this.album_name);
+				$window.alert("Cover picture of album changed");
 			};
 		} ]);
 

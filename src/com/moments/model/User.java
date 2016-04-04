@@ -210,4 +210,26 @@ public class User implements Serializable {
 	public void setShared_album(Set<Album> shared_album) {
 		this.shared_album = shared_album;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + user_id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		if (user_id != other.user_id)
+			return false;
+		return true;
+	}
 }

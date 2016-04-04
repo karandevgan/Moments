@@ -1,7 +1,10 @@
 package com.moments.DaoImpl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,5 +102,43 @@ public class AlbumDaoImpl extends CustomHibernateDaoSupport implements AlbumDao 
 		getHibernateTemplate().initialize(album.getShared_users());
 		album.getShared_users().add(share_user);
 		update(album);
+	}
+	
+	@Override
+	public Map<String, Set<User>> mySharedAlbums(int user_id) {
+		List<Album> albums = getAlbums(user_id);
+		Map<String, Set<User>> sharedAlbumMap = new HashMap<String, Set<User>>();
+		if (albums != null) {
+			for (Album album: albums) {
+				Album albumObj = getAlbum(album.getAlbum_id());
+				getHibernateTemplate().initialize(album.getShared_users());
+				Set<User> sharedUsers = albumObj.getShared_users();
+				if (sharedUsers.size() > 0) {
+					sharedAlbumMap.put(album.getAlbum_name(), sharedUsers);
+				}
+			}
+		}
+		return sharedAlbumMap;
+	}
+
+	@Override
+	public void unshare(int album_id, User user) {
+		Album album = getAlbum(album_id);
+		getHibernateTemplate().initialize(album.getShared_users());
+		album.getShared_users().remove(user);
+		getHibernateTemplate().update(album);
+	}
+
+	@Override
+	public boolean isAlbumShared(int album_id, User user) {
+		Album album = getAlbum(album_id);
+		getHibernateTemplate().initialize(album.getShared_users());
+		return album.getShared_users().contains(user);
+	}
+
+	@Override
+	public void changeCover(Album album, String path) {
+		album.setCoverphoto(path);
+		getHibernateTemplate().update(album);
 	}
 }

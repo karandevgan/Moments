@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -165,7 +166,7 @@ public class UserController {
 	@RequestMapping(value = "/upload", params = { "album_name" }, method = RequestMethod.POST)
 	public ResponseEntity<Void> uploadFile(MultipartHttpServletRequest request, HttpServletRequest req,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
-		
+
 		User user = null;
 		Object sessionUser = session.getAttribute("username");
 		ResponseEntity<Void> returnEntity = null;
@@ -178,7 +179,7 @@ public class UserController {
 			Iterator<String> itr = request.getFileNames();
 
 			MultipartFile file = request.getFile(itr.next());
-			
+
 			if (service.uploadImage(album, user, file)) {
 				returnEntity = new ResponseEntity<Void>(HttpStatus.CREATED);
 			} else {
@@ -271,7 +272,7 @@ public class UserController {
 		return returnEntity;
 	}
 
-	@RequestMapping(value = "/getallphotos", params = {"call"})
+	@RequestMapping(value = "/getallphotos", params = { "call" })
 	public ResponseEntity<List<Photo>> allPhotos(HttpServletRequest request,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
 		User user = null;
@@ -296,7 +297,7 @@ public class UserController {
 	public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String public_id = request.getParameter("public_id");
 		String image_path = service.getImagePath(public_id);
-		String image_name = image_path.substring(image_path.lastIndexOf('/')+1, image_path.length());
+		String image_name = image_path.substring(image_path.lastIndexOf('/') + 1, image_path.length());
 		System.out.println(image_name);
 		if (image_path != null) {
 			URL url = new URL(image_path);
@@ -306,14 +307,14 @@ public class UserController {
 				mimeType = "application/octet-stream";
 			System.out.println(mimeType);
 			response.setContentType(mimeType);
-			response.setHeader("Content-Disposition",
-					String.format("attachment; filename=\"" + image_name + "\""));
+			response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + image_name + "\""));
 			InputStream inputStream = url.openStream();
 			FileCopyUtils.copy(inputStream, response.getOutputStream());
 		}
 	}
-	
-	@RequestMapping(value = "/album/sharewithuser", params = { "album_name", "share_user" }, produces="application/json")
+
+	@RequestMapping(value = "/album/sharewithuser", params = { "album_name",
+			"share_user" }, produces = "application/json")
 	public ResponseEntity<List<String>> shareAlbumWithUser(HttpServletRequest request,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
 		User user = null;
@@ -325,18 +326,23 @@ public class UserController {
 		if (user != null) {
 			String album_name = request.getParameter("album_name");
 			String share_user = request.getParameter("share_user");
-			Album album = service.getAlbum(album_name, user.getUser_id());
-			if (album != null) {
-				try {
-					service.shareAlbumWithUser(album.getAlbum_id(), service.getUser(share_user));
-					returnEntity = new ResponseEntity<List<String>>(HttpStatus.ACCEPTED);
-				} catch (Exception e) {
-					response.add("Already Shared With This User");
-					returnEntity = new ResponseEntity<List<String>>(response,HttpStatus.CONFLICT);
-				}
+			if (user.getUsername().equals(share_user)) {
+				response.add("Cannot share album with yourself!");
+				returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.CONFLICT);
 			} else {
-				response.add("Album Does Not Exist");
-				returnEntity = new ResponseEntity<List<String>>(response,HttpStatus.BAD_REQUEST);
+				Album album = service.getAlbum(album_name, user.getUser_id());
+				if (album != null) {
+					try {
+						service.shareAlbumWithUser(album.getAlbum_id(), service.getUser(share_user));
+						returnEntity = new ResponseEntity<List<String>>(HttpStatus.ACCEPTED);
+					} catch (Exception e) {
+						response.add("Already Shared With This User");
+						returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.CONFLICT);
+					}
+				} else {
+					response.add("Album Does Not Exist");
+					returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.BAD_REQUEST);
+				}
 			}
 		} else {
 			response.add("Unauthorized");
@@ -344,7 +350,7 @@ public class UserController {
 		}
 		return returnEntity;
 	}
-	
+
 	@RequestMapping(value = "/sharedalbums", method = RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<Set<Album>> getSharedAlbums(HttpServletRequest req,
 			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
@@ -364,5 +370,89 @@ public class UserController {
 			returnStatus = HttpStatus.UNAUTHORIZED;
 		}
 		return new ResponseEntity<Set<Album>>(albums, returnStatus);
+	}
+
+	@RequestMapping(value = "/mysharedalbums", method = RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<Map<String, Set<User>>> getMySharedAlbums(HttpServletRequest req,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		HttpStatus returnStatus = null;
+		user = service.getUser(token_value, sessionUser);
+		Map<String, Set<User>> mySharedAlbums = null;
+		if (user != null) {
+			mySharedAlbums = service.mySharedAlbums(user.getUser_id());
+			if (mySharedAlbums.size() > 0) {
+				returnStatus = HttpStatus.OK;
+			} else
+				returnStatus = HttpStatus.NO_CONTENT;
+		} else {
+			returnStatus = HttpStatus.UNAUTHORIZED;
+		}
+		return new ResponseEntity<Map<String, Set<User>>>(mySharedAlbums, returnStatus);
+	}
+
+	@RequestMapping(value = "/album/unshare", params = { "album_name", "share_user" }, produces = "application/json")
+	public ResponseEntity<List<String>> unshareAlbumWithUser(HttpServletRequest request,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<List<String>> returnEntity = null;
+		List<String> response = new ArrayList<String>();
+		user = service.getUser(token_value, sessionUser);
+		System.out.println("Inside Share Album Controller");
+		if (user != null) {
+			String album_name = request.getParameter("album_name");
+			String share_user = request.getParameter("share_user");
+			Album album = service.getAlbum(album_name, user.getUser_id());
+			if (album != null) {
+				try {
+					service.unshare(album.getAlbum_id(), service.getUser(share_user));
+					returnEntity = new ResponseEntity<List<String>>(HttpStatus.ACCEPTED);
+				} catch (Exception e) {
+					response.add("Error unsharing album");
+					returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} else {
+				response.add("Album Does Not Exist");
+				returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			response.add("Unauthorized");
+			returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
+	}
+
+	@RequestMapping(value = "/album/makecover", params = { "path", "album_name" }, produces = "application/json")
+	public ResponseEntity<List<String>> changeCover(HttpServletRequest request,
+			@RequestHeader(value = "Auth-Token", required = false) String token_value) {
+		User user = null;
+		Object sessionUser = session.getAttribute("username");
+		ResponseEntity<List<String>> returnEntity = null;
+		List<String> response = new ArrayList<String>();
+		user = service.getUser(token_value, sessionUser);
+
+		if (user != null) {
+			String path = request.getParameter("path");
+			String album_name = request.getParameter("album_name");
+			Album album = service.getAlbum(album_name, user.getUser_id());
+			if (album != null) {
+				try {
+					service.changeCover(album, path);
+					returnEntity = new ResponseEntity<List<String>>(HttpStatus.ACCEPTED);
+				} catch (Exception e) {
+					response.add("Error changing cover");
+					returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+				}
+			} else {
+				response.add("Album Does Not Exist");
+				returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.BAD_REQUEST);
+			}
+		} else {
+			response.add("Unauthorized");
+			returnEntity = new ResponseEntity<List<String>>(response, HttpStatus.UNAUTHORIZED);
+		}
+		return returnEntity;
 	}
 }

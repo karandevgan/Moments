@@ -68,7 +68,7 @@ public class SpringWebConfig extends WebMvcConfigurerAdapter {
 	public DriverManagerDataSource dataSource() {
 		DriverManagerDataSource ds = new DriverManagerDataSource();
 		ds.setDriverClassName("org.postgresql.Driver");
-		ds.setUrl(System.getenv().get("JDBC_DATABASE_URL")+"?sslmode=disable");
+		ds.setUrl(System.getenv().get("JDBC_DATABASE_URL")+"?sslmode=require");
 		ds.setUsername(System.getenv().get("DATABASE_USER"));
 		ds.setPassword(System.getenv().get("DATABASE_PASSWORD"));
 		return ds;
